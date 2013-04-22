@@ -18,11 +18,11 @@ class LfsrRandom(object):
             raise ValueError("Invalid characteristic polynomial - degree too low")
         if state == 0:
             raise ValueError("Invalid state polynomial - all zero")
-        if state.bit_length() >= charis.bit_length():
+        if state.bit_length() > charis.bit_length():
             raise ValueError("Invalid state polynomial - degree >= char poly degree")
 
         self.characteristic = charis
-        self.degree = charis.bit_length() - 1
+        self.degree = charis.bit_length()
         self.state = state
 
     def next(self):

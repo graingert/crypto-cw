@@ -25,7 +25,7 @@ print(cypher[:len(plaintext)])
 print(target)
 
 
-for charis, state in product(xrange(0b100000, 0b111111+1), xrange(0b000001, 0b011111+1)):
+for charis, state in product(xrange(0b100000, 0b111111+1), xrange(0b000001, 0b111111+1)):
     if bitarray(islice(LfsrRandom(charis, state), len(plaintext))) == target:
         print(charis, state)
         keystream = bitarray(
