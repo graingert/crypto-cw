@@ -4,30 +4,30 @@ import json
 
 from lfsr import LfsrRandom
 
+
+def bitarray_frombytes(some_bytes):
+    ret = bitarray()
+    ret.frombytes(some_bytes)
+    return ret
+
 #cypher = bytearray(b'\xd1\xc1')
-cypher = bytearray(json.load(open("cypher.json")))
-plaintext = bytearray(b"Ur")
+cypher = bitarray_frombytes(bytes(bytearray(json.load(open("cypher.json")))))
+plaintext = bitarray_frombytes(b"Ur")
 
 
-def xor_bytearray(first, second):
-    return bytearray((x ^ y for x, y in zip(first, second)))
-
-target = bitarray(xor_bytearray(cypher, plaintext))
-
-cypher_bits = len(cypher) * int(255).bit_length()
+target = cypher[:len(plaintext)] ^ plaintext
 
 
-for charis, state in product(xrange(0b10000, 0b11111),xrange(0b00001, 0b01111)):
-    if bitarray(islice(LfsrRandom(charis, state), 2)) == target:
+print plaintext
+print target
+print cypher[:len(plaintext)]
+
+for charis, state in product(xrange(0b10000, 0b11111), xrange(0b00001, 0b01111)):
+    keystream = bitarray(islice(LfsrRandom(charis, state), len(plaintext)))
+    if keystream == target:
         print charis, state
-        try:
-            keystream = bytearray(
-                bitarray(
-                    islice(LfsrRandom(charis, state), cypher_bits)
-                ).tostring()
-            )
+        keystream = bitarray(
+            islice(LfsrRandom(charis, state), len(cypher))
+        )
 
-            xor_bytearray(cypher, keystream).decode('ascii')
-            print "ding:", charis, state
-        except:
-            pass
+        print (cypher ^ keystream).tobytes()
