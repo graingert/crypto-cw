@@ -1,5 +1,9 @@
+from __future__ import print_function
+
 from itertools import islice, product
 from bitarray import bitarray
+
+import binascii
 import json
 
 from lfsr import LfsrRandom
@@ -18,16 +22,16 @@ plaintext = bitarray_frombytes(b"Ur")
 target = cypher[:len(plaintext)] ^ plaintext
 
 
-print plaintext
-print cypher[:len(plaintext)]
-print target
+print(plaintext)
+print(cypher[:len(plaintext)])
+print(target)
 
 
 for charis, state in product(xrange(0b100000, 0b111111), xrange(0b000001, 0b011111)):
     if bitarray(islice(LfsrRandom(charis, state), len(plaintext))) == target:
-        print charis, state
+        print(charis, state)
         keystream = bitarray(
             islice(LfsrRandom(charis, state), len(cypher))
         )
 
-        print (cypher ^ keystream).tobytes()
+        print(binascii.hexlify((cypher ^ keystream).tobytes()))
