@@ -19,12 +19,12 @@ target = cypher[:len(plaintext)] ^ plaintext
 
 
 print plaintext
-print target
 print cypher[:len(plaintext)]
+print target
+
 
 for charis, state in product(xrange(0b10000, 0b11111), xrange(0b00001, 0b01111)):
-    keystream = bitarray(islice(LfsrRandom(charis, state), len(plaintext)))
-    if keystream == target:
+    if bitarray(islice(LfsrRandom(charis, state), len(plaintext))) == target:
         print charis, state
         keystream = bitarray(
             islice(LfsrRandom(charis, state), len(cypher))
