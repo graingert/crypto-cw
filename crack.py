@@ -1,6 +1,6 @@
 from __future__ import print_function, division
 
-from itertools import islice, product
+from itertools import islice, product, chain
 from bitarray import bitarray
 from collections import Counter
 from operator import itemgetter
@@ -38,32 +38,44 @@ def byte_to_unicode(byte):
     except UnicodeDecodeError:
         return "0x" + binascii.hexlify(byte).upper()
 
-for charis, state in product(xrange(0b100000, 0b111111+1), xrange(0b000001, 0b111111+1)):
-    if bitarray(islice(LfsrRandom(charis, state), len(plaintext))) == target:
-        print(charis, state)
-        keystream = bitarray(
-            islice(LfsrRandom(charis, state), len(cypher))
-        )
 
-        plain = (cypher ^ keystream).tobytes()
-        counts_labels = sorted(
-            iteritems(Counter(plain)),
-            key=itemgetter(1),
-            reverse=True
-        )
-        counts = np.empty(len(counts_labels), dtype=np.int16)
-        labels = []
-        for (i, (char, count)) in enumerate(counts_labels):
-            counts[i] = count
-            labels.append(char)
+def brute_force_LFSR():
+    for charis, state in product(xrange(0b100000, 0b111111+1), xrange(0b000001, 0b111111+1)):
+        if bitarray(islice(LfsrRandom(charis, state), len(plaintext))) == target:
+            print(charis, state)
+            keystream = bitarray(
+                islice(LfsrRandom(charis, state), len(cypher))
+            )
 
-        width = 0.8
-        ind = np.arange(len(counts_labels))
+            plain = (cypher ^ keystream).tobytes()
+            counts_labels = sorted(
+                iteritems(Counter(plain)),
+                key=itemgetter(1),
+                reverse=True
+            )
+            counts = np.empty(len(counts_labels), dtype=np.int16)
+            labels = []
+            for (i, (char, count)) in enumerate(counts_labels):
+                counts[i] = count
+                labels.append(char)
 
-        plt.bar(ind, counts, width=width)
+            width = 0.8
+            ind = np.arange(len(counts_labels))
 
-        plt.ylabel('Frequency')
-        plt.xlabel('Byte')
-        plt.title('Byte Frequency')
-        plt.xticks(ind+(width/2), map(byte_to_unicode, labels))
-        plt.show()
+            plt.bar(ind, counts, width=width)
+
+            plt.ylabel('Frequency')
+            plt.xlabel('Byte')
+            plt.title('Byte Frequency')
+            plt.xticks(ind+(width/2), map(byte_to_unicode, labels))
+            plt.show()
+
+keystream = bitarray(
+    chain(
+        islice(LfsrRandom(47, 3), 31), ('1')
+    )
+)
+
+keystream = keystream * int(len(cypher)/len(keystream))
+
+print((cypher ^ keystream).tobytes())
