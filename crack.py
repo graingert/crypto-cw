@@ -6,7 +6,6 @@ from collections import Counter
 from operator import itemgetter
 
 import binascii
-import json
 
 from lfsr import LfsrRandom
 
@@ -22,7 +21,7 @@ def bitarray_frombytes(some_bytes):
     return ret
 
 #cypher = bytearray(b'\xd1\xc1')
-cypher = bitarray_frombytes(bytes(bytearray(json.load(open("cypher.json")))))
+cypher = bitarray_frombytes(bytes(open('cypher.bin', 'r+b').read()))
 plaintext = bitarray_frombytes(b"Ur")
 
 
