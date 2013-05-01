@@ -34,7 +34,7 @@ class bitarray(with_metaclass(FromFactoryer, sub_bitarray)):
 
 
 #cypher = bytearray(b'\xd1\xc1')
-cypher = bitarray.frombytes(bytes(open('cypher.bin', 'r+b').read()))
+cypher = bitarray.fromfile(open('cypher.bin', 'r+b'))
 plaintext = bitarray.frombytes(b"Ur")
 
 
