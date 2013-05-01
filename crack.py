@@ -1,7 +1,7 @@
 from __future__ import print_function, division
 
 from itertools import islice, product, chain
-from bitarray import bitarray
+from bitarray import bitarray as sub_bitarray
 from collections import Counter
 from operator import itemgetter
 
@@ -12,17 +12,30 @@ from lfsr import LfsrRandom
 import numpy as np
 import matplotlib.pyplot as plt
 
-from six import iteritems
+from six import iteritems, with_metaclass
 
 
-def bitarray_frombytes(some_bytes):
-    ret = bitarray()
-    ret.frombytes(some_bytes)
-    return ret
+class FromFactoryer(type):
+    def __getattribute__(cls, attr):
+        if attr.startswith("from") and hasattr(getattr(sub_bitarray, attr, None), '__call__'):
+            def wrapped(*args, **kwargs):
+                bit = cls()
+                getattr(bit, attr)(*args, **kwargs)
+                return bit
+
+            return wrapped
+        else:
+            # Default behaviour
+            return super(FromFactoryer).__getattribute__(cls, attr)
+
+
+class bitarray(with_metaclass(FromFactoryer, sub_bitarray)):
+    pass
+
 
 #cypher = bytearray(b'\xd1\xc1')
-cypher = bitarray_frombytes(bytes(open('cypher.bin', 'r+b').read()))
-plaintext = bitarray_frombytes(b"Ur")
+cypher = bitarray.frombytes(bytes(open('cypher.bin', 'r+b').read()))
+plaintext = bitarray.frombytes(b"Ur")
 
 
 target = cypher[:len(plaintext)] ^ plaintext
