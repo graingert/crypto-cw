@@ -1,6 +1,6 @@
 from __future__ import print_function, division
 
-from itertools import islice, product, chain
+from itertools import islice, product, chain, repeat
 from bitarray import bitarray as sub_bitarray
 from collections import Counter
 from operator import itemgetter
@@ -8,6 +8,8 @@ from operator import itemgetter
 import binascii
 
 from lfsr import LfsrRandom
+
+import string
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -26,7 +28,7 @@ class FromFactoryer(type):
             return wrapped
         else:
             # Default behaviour
-            return super(FromFactoryer).__getattribute__(cls, attr)
+            return super(FromFactoryer, cls).__getattribute__(attr)
 
 
 class bitarray(with_metaclass(FromFactoryer, sub_bitarray)):
@@ -37,6 +39,13 @@ class bitarray(with_metaclass(FromFactoryer, sub_bitarray)):
 cypher = bitarray.fromfile(open('cypher.bin', 'r+b'))
 plaintext = bitarray.frombytes(b"Ur")
 
+"""
+def auto_correlate(bits):
+    bits_copy = bits.copy()
+    while len(bits_copy):
+        bits_copy.pop()
+        yield bitarray.bitdiff(bits, bits_copy)
+"""
 
 target = cypher[:len(plaintext)] ^ plaintext
 
@@ -83,12 +92,23 @@ def brute_force_LFSR():
             plt.xticks(ind+(width/2), map(byte_to_unicode, labels))
             plt.show()
 
-keystream = bitarray(
-    chain(
-        islice(LfsrRandom(47, 3), 31), ('1')
-    )
-)
+valid_chars = frozenset(chain(string.ascii_lowercase, string.ascii_uppercase, " ,."))
 
-keystream = keystream * int(len(cypher)/len(keystream))
+keys = []
 
-print((cypher ^ keystream).tobytes())
+for i in range(2**8):
+    key = bitarray(islice(LfsrRandom(47, 3), 3*8))
+    key.frombytes(chr(i))
+    keystream = key * int(len(cypher)/len(key))
+    plaintext = (cypher ^ keystream).tobytes()
+    if valid_chars.issuperset(plaintext):
+        keys.append({
+            "key": key,
+            "keystream": keystream,
+            "plaintext": plaintext
+
+        })
+
+for key in keys:
+    print(key["key"])
+    print(key["plaintext"])
