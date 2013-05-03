@@ -1,6 +1,10 @@
 import random
-from ngram_score import ngram_score
 import re
+
+from six import Iterator
+from string import maketrans
+
+from ngram_score import ngram_score
 
 fitness = ngram_score('quadgrams.txt')  # load our quadgram model
 
@@ -11,53 +15,61 @@ def i2a(i):
 
 
 # decipher a piece of text using the substitution cipher and a certain key
-def sub_decipher(text, key):
-    invkey = [i2a(key.index(i)) for i in 'ABCDEFGHIJKLMNOPQRSTUVWXYZ']
-    ret = ''
-    for c in text:
-        if c.isalpha():
-            ret += invkey[ord(c.upper())-ord('A')]
-        else:
-            ret += c
-    return ret
+def sub_decipher(text, key, original="ABCDEFGHIJKLMNOPQRSTUVWXYZ"):
+    return text.translate(
+        maketrans(original, ''.join(key))
+    )
 
 
-def break_simplesub(ctext, startkey=None):
+def break_simple_sub(ctext, startkey="ABCDEFGHIJKLMNOPQRSTUVWXYZ"):
     ''' perform hill-climbing with a single start. This function may have to be called many times
-        to break a substitution cipher. '''
-    # make sure ciphertext has all spacing/punc removed and is uppercase
+    to break a substitution cipher. '''
+        # make sure ciphertext has all spacing/punc removed and is uppercase
     ctext = re.sub('[^A-Z]', '', ctext.upper())
-    parentkey, parentscore = startkey or list('ABCDEFGHIJKLMNOPQRSTUVWXYZ'), -99e99
-    if not startkey:
+
+    startkey = list(startkey)
+    parentkey = list(startkey)
+    random.shuffle(parentkey)
+    bestscore = fitness.score(sub_decipher(ctext, parentkey))
+    bestkey = list(parentkey)
+    parentscore = bestscore
+
+    while(True):
+        counter = 0
+        while(counter < 1000):
+            a = random.randint(0, 25)
+            b = random.randint(0, 25)
+            childkey = list(parentkey)
+
+            # swap two characters in the child
+            childkey[a], childkey[b] = childkey[b], childkey[a]
+
+            plaintext = sub_decipher(ctext, childkey)
+            score = fitness.score(plaintext)
+            # if the child was better, make a new parentkey
+            if score > parentscore:
+                parentscore = score
+                parentkey = childkey
+                counter = 0
+            else:
+                counter += 1
+
+        if parentscore > bestscore:
+            bestscore = parentscore
+            bestkey = list(parentkey)
+            yield bestscore, bestkey, plaintext
+
         random.shuffle(parentkey)
-    parentscore = fitness.score(sub_decipher(ctext, parentkey))
-    count = 0
-    while count < 1000:
-        a = random.randint(0, 25)
-        b = random.randint(0, 25)
-        child = parentkey[:]
-        # swap two characters in the child
-        child[a], child[b] = child[b], child[a]
-        score = fitness.score(sub_decipher(ctext, child))
-        # if the child was better, replace the parent with it
-        if score > parentscore:
-            parentscore, parentkey = score, child[:]
-            count = 0  # reset the counter
-        count += 1
-    return parentscore, parentkey
+        parentscore = fitness.score(sub_decipher(ctext, parentkey))
 
-ctext = 'pmpafxaikkitprdsikcplifhwceigixkirradfeirdgkipgigudkcekiigpwrpucikceiginasikwduearrxiiqepcceindgmieinpwdfprduppcedoikiqiasafmfddfipfgmdafmfdteiki'
 
-print "Substitution Cipher solver, you may have to wait several iterations"
-print "for the correct result. Press ctrl+c to exit program."
-# keep going until we are killed by the user
-i = 0
-maxscore = -99e99
-while 1:
-    i = i+1  # keep track of how many iterations we have done
-    score, key = break_simplesub(ctext, list('ABCDEFGHIJKLMNOPQRSTUVWXYZ'))
-    if score > maxscore:
-        maxscore, maxkey = score, key[:]
-        print '\nbest score so far:', maxscore, 'on iteration', i
-        print '    best key: ' + ''.join(maxkey)
-        print '    plaintext: ' + sub_decipher(ctext, maxkey)
+if __name__ == "__main__":
+    ctext = 'pmpafxaikkitprdsikcplifhwceigixkirradfeirdgkipgigudkcekiigpwrpucikceiginasikwduearrxiiqepcceindgmieinpwdfprduppcedoikiqiasafmfddfipfgmdafmfdteiki'
+
+    print "Substitution Cipher solver, you may have to wait several iterations"
+    print "for the correct result. Press ctrl+c to exit program."
+    # keep going until we are killed by the user
+    for (i, (score, key, text)) in enumerate(break_simple_sub(ctext)):
+            print '\nbest score so far:', score, 'on iteration', i
+            print '    best key: ' + ''.join(key)
+            print '    plaintext: ' + text
