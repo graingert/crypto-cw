@@ -83,6 +83,7 @@ if __name__ == "__main__":
     print "for the correct result. Press ctrl+c to exit program."
     # keep going until we are killed by the user
     for (i, (score, key, text)) in enumerate(break_simple_sub(ctext)):
-        print '\nbest score so far:', score, 'on iteration', i
-        print '    best key: ' + key
-        print '    plaintext: ' + text
+        print """best score so far: {score}, on iteration, {i}
+    best key: {key}
+    plaintext: {text}
+""".format(score=score, key=key, text=text, i=i)
