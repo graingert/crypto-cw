@@ -73,6 +73,13 @@ def break_simple_sub(ctext, startkey="ABCDEFGHIJKLMNOPQRSTUVWXYZ"):
         parentscore = fitness.score(sub_decipher(ctext, parentkey))
 
 
+def print_solution(ctext):
+    for (i, (score, key, text)) in enumerate(break_simple_sub(ctext)):
+        print """best score so far: {score}, on iteration, {i}
+    best key: {key}
+    plaintext: {text}
+""".format(score=score, key=key, text=text, i=i)
+
 if __name__ == "__main__":
 
     ctext = """Idiel Aehssh yiv mjhswirhl zq wbh ohashvveml bh vm oshioho.
@@ -82,8 +89,4 @@ if __name__ == "__main__":
     print "Substitution Cipher solver, you may have to wait several iterations"
     print "for the correct result. Press ctrl+c to exit program."
     # keep going until we are killed by the user
-    for (i, (score, key, text)) in enumerate(break_simple_sub(ctext)):
-        print """best score so far: {score}, on iteration, {i}
-    best key: {key}
-    plaintext: {text}
-""".format(score=score, key=key, text=text, i=i)
+    print_solution(ctext)
