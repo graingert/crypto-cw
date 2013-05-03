@@ -21,10 +21,20 @@ def sub_decipher(text, key, original="ABCDEFGHIJKLMNOPQRSTUVWXYZ"):
     )
 
 
+def human_sub_decipher(text, key, original="ABCDEFGHIJKLMNOPQRSTUVWXYZ"):
+    key = ''.join(key)
+    key = key.upper() + key.lower()
+    return text.translate(
+        maketrans(original.upper() + original.lower(), key)
+    )
+
+
 def break_simple_sub(ctext, startkey="ABCDEFGHIJKLMNOPQRSTUVWXYZ"):
     ''' perform hill-climbing with a single start. This function may have to be called many times
     to break a substitution cipher. '''
         # make sure ciphertext has all spacing/punc removed and is uppercase
+
+    original_text = ctext
     ctext = re.sub('[^A-Z]', '', ctext.upper())
 
     startkey = list(startkey)
@@ -57,19 +67,22 @@ def break_simple_sub(ctext, startkey="ABCDEFGHIJKLMNOPQRSTUVWXYZ"):
         if parentscore > bestscore:
             bestscore = parentscore
             bestkey = list(parentkey)
-            yield bestscore, bestkey, plaintext
+            yield bestscore, ''.join(bestkey), human_sub_decipher(original_text, bestkey)
 
         random.shuffle(parentkey)
         parentscore = fitness.score(sub_decipher(ctext, parentkey))
 
 
 if __name__ == "__main__":
-    ctext = 'pmpafxaikkitprdsikcplifhwceigixkirradfeirdgkipgigudkcekiigpwrpucikceiginasikwduearrxiiqepcceindgmieinpwdfprduppcedoikiqiasafmfddfipfgmdafmfdteiki'
+
+    ctext = """Idiel Aehssh yiv mjhswirhl zq wbh ohashvveml bh vm oshioho.
+    Nms wbshh oiqv inwhs wbh ohkejhsq mn bev vahhtb iw wbh kmodh bh kiq ml
+    i vmni iw bmgh shthejeld lm mlh ilo dmeld lmybhsh."""
 
     print "Substitution Cipher solver, you may have to wait several iterations"
     print "for the correct result. Press ctrl+c to exit program."
     # keep going until we are killed by the user
     for (i, (score, key, text)) in enumerate(break_simple_sub(ctext)):
-            print '\nbest score so far:', score, 'on iteration', i
-            print '    best key: ' + ''.join(key)
-            print '    plaintext: ' + text
+        print '\nbest score so far:', score, 'on iteration', i
+        print '    best key: ' + key
+        print '    plaintext: ' + text
