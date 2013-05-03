@@ -7,8 +7,9 @@
 
 # Random number generator class (implements most functionality of random.Random)
 
+from six import Iterator
 
-class LfsrRandom(object):
+class LfsrRandom(Iterator):
 
     def __init__(self, charis, state):
 
@@ -25,7 +26,7 @@ class LfsrRandom(object):
         self.degree = charis.bit_length()
         self.state = state
 
-    def next(self):
+    def __next__(self):
         result = self.state & 1                            # Use bit 0 in the LFSR state as the result
         self.state = self.state << 1                       # Multiply by x
         if (self.state >> self.degree) & 1 != 0:           # If degree of state polynomial matches degree of characteristic polynomial
