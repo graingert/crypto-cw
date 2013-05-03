@@ -16,6 +16,8 @@ import matplotlib.pyplot as plt
 
 from six import iteritems, with_metaclass
 
+from break_simplesub import print_solution
+
 
 class FromFactoryer(type):
     def __getattribute__(cls, attr):
@@ -111,3 +113,4 @@ for i in range(2**8):
 for key in keys:
     print(key["key"])
     print(key["plaintext"])
+    print_solution(key["plaintext"])
