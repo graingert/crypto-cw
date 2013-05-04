@@ -11,8 +11,8 @@
 \usepackage[a4paper]{geometry}
 \usepackage{tabularx}
 \usepackage{longtable}
-
-
+\usepackage{listings}
+\usepackage{color}
 
 \title{Cryptography Assignment}
 \author{
@@ -25,14 +25,22 @@
 \begin{document}
 \maketitle
 
-\tableofcontents
-
 \begin{abstract}
-This is the paper's abstract \ldots
+This report aims to solve a series of challenges set by D. A. Nicole and B. Halak\cite{instructions}, aiming for both thoroughness of methodology and accuracy of solution.  The cryptographic decryption challenges demonstrate the use of Python as a useful tool to create automated cipher decryption systems.
 \end{abstract}
 
-\section{Introduction}
-This is time for all good men to come to the aid of their party!
+\tableofcontents
+
+\section{Linear feedback shift register}
+
+The problem set forth in this challenge is to decrypt a block of what appears to be a block of data encoded as hexadecimal.
+
+The first thing to note about the cypher-text is that it is presented as a bitmap. After some analysis, not discussed in this report, this bitmap appears to contain no information encoded using stegonographic techniques.  The second, is that there is a repeating pattern of high bits that repeats every 32 bits.
+
+\subsection{Building an LFSR}
+Because a hint with this question identifies an LFSR as an ecryption scheme, and gives away the crib of ``Ur'', a program to brute force all possible LFSR sequences that result in the first characters of the plain-text being ``Ur''.
+
+\lstinputlisting[language=Python]{crack.py}
 
 \paragraph{Outline}
 The remainder of this article is organized as follows.
