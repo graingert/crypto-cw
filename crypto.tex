@@ -49,10 +49,10 @@ This report aims to solve a series of challenges set by D. A. Nicole and B. Hala
 
 The problem set forth in this challenge is to decrypt a block of what appears to be a block of data encoded as hexadecimal.
 
-The first thing to note about the cypher-text is that it is presented as a bitmap. After some analysis, not discussed in this report, this bitmap appears to contain no information encoded using stegonographic techniques.  The second, is that there is a repeating pattern of high bits that repeats every 32 bits.
+The first observation about the cypher-text is that it is presented as a bitmap. After some analysis, not discussed in this report, this bitmap appears to contain no information encoded using stegonographic techniques.  The second, is that there is a pattern of high bits that repeats every 32 bits.
 
 \subsection{Building an LFSR}
-Because a hint with this question identifies an LFSR as an ecryption scheme, and gives away the crib of ``Ur'', a program to brute force all possible LFSR sequences that result in the first characters of the plain-text being ``Ur''.
+Because a hint with this question identifies an LFSR as the first encryption scheme, and gives away the crib of ``Ur'', a program was created to brute force all possible LFSR sequences that result in the first characters of the plain-text being ``Ur''.
 
 \lstinputlisting[language=Python]{break_lfsr.py}
 
@@ -60,17 +60,24 @@ This program, when run with \verb`python break_lfsr.py <the cipher-text> Ur` pri
 
 \VerbatimInput{broken_lfsr_out.txt}
 
-This output is clearly broken, after the 4th character.
+This output is clearly broken, after and including the 4th character.
 
 \subsection{Decrypting a buggy LFSR implementation}
+Referring back to the second observation of the cipher-text, a repeating pattern of high bits that repeats every 32 bits. This observation is clearly at odds with an LFSR of degree 5: these LFSRs repeat every 31 bits. The observed 32bit pattern can be quantified using autocorrelation.
 
-\section{Previous work}\label{previous work}
+A program was created to brute force the last byte of the repeating 32 bit key, assuming that the first 3 bytes were from a valid 31 bit LFSR key-stream.
+
+\lstinputlisting[language=Python]{last_byte.py}
+
+This resulted in only one valid solution, clearly a mono-alphabetic substitution cipher, this was solved using techniques as discussed in \ref{mono}.
+
+\section{Maths}\label{previous work}
 A much longer \LaTeXe{} example was written by Gil~\cite{Gil:02}.
 
-\section{Results}\label{results}
+\section{Mono-alphabetic Substitution}\label{mono}
 In this section we describe the results.
 
-\section{Conclusions}\label{conclusions}
+\section{The miss-application of RC4 in WEP and WPA-TKIP}\label{conclusions}
 We worked hard, and achieved very little.
 
 \bibliographystyle{abbrv}
