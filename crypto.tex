@@ -54,14 +54,14 @@ The first observation about the cypher-text is that it is presented as a bitmap.
 \subsection{Compromising LFSR encryption}
 A hint with this question identifies an LFSR as the first encryption scheme, and gives away the crib of ``Ur''.  Because of this a program, shown in appendix~\ref{break-lfsr}, was created to brute force all possible LFSR sequences that result in the first characters of the plain-text being ``Ur''.
 
-The output of this program, when run with \verb`python break_lfsr.py <the cipher-text> Ur`, is shown in appendix~\ref{break-lfsr-out}.  This output is clearly incorrect: the output is corrupt after and including the 4th character.
+The output of this program, when run with \verb`python break_lfsr.py <the cipher-text> Ur`, is shown in appendix~\ref{break-lfsr-out}.  This output is clearly incorrect: the output is corrupt after and including the 4th character.  Because only one output it possible with this crib, and LFSR degree something is wrong with the LFSR implementation.
 
 \subsection{Compromising a buggy LFSR encryption implementation}
-Referring back to the second observation of the cipher-text, a repeating pattern of high bits that repeats every 32 bits. This observation is clearly at odds with an LFSR of degree 5: these LFSRs repeat every 31 bits. The observed 32bit pattern can be quantified using autocorrelation.
+An LFSR of degree 5 will repeat every 31 bits, however, referring back to the second observation of the cipher-text there is a pattern of high bits that repeats every 32 bits. This observation is clearly contradicts the hint that the second encryption stage uses an LFSR of degree 5.
 
 A program, shown in appendix~\ref{last-byte}, was created to brute force the last byte of the repeating 32 bit key, assuming that the first 3 bytes were from a valid 31 bit LFSR key-stream.
 
-This resulted in only one valid solution, clearly a mono-alphabetic substitution cipher, this was solved using techniques as discussed in section~\ref{mono}.  The solution is shown in appendix~\ref{q1-solution}
+This resulted in only one valid solution: valid as defined by a solution with only printable characters.  This mid-stage cipher-text, shown in appendix~\ref{last-byte-out}, shows signs of a mono-alphabetic substitution cypher: repeated three letter words ``pna'' and ``gur'' indicating ``and'' and ``the'', long repeated words ``Ubjrire'', and valid use of punctuation such as commas and capitol letters after full-stops. As such this remaining cipher-text was decrypted using techniques as discussed in section~\ref{mono}.  The final solution is shown in appendix~\ref{q1-solution}.
 
 \section{Maths}
 
