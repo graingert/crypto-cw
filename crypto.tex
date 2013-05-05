@@ -50,11 +50,13 @@ Because a hint with this question identifies an LFSR as an ecryption scheme, and
 
 \lstinputlisting[language=Python]{break_lfsr.py}
 
-\paragraph{Outline}
-The remainder of this article is organized as follows.
-Section~\ref{previous work} gives account of previous work.
-Our new and exciting results are described in Section~\ref{results}.
-Finally, Section~\ref{conclusions} gives the conclusions.
+This program, when run with \verb`python break_lfsr.py <the cipher-text> Ur` prints:
+
+%\input{broken_lfsr_out}
+
+This output is clearly broken, after the 4th character.
+
+\subsection{Decrypting a buggy LFSR implementation}
 
 \section{Previous work}\label{previous work}
 A much longer \LaTeXe{} example was written by Gil~\cite{Gil:02}.
