@@ -12,6 +12,7 @@
 \usepackage{tabularx}
 \usepackage{longtable}
 \usepackage{listings}
+\usepackage{fancyvrb}
 \usepackage{color}
 
 \title{Cryptography Assignment}
@@ -28,6 +29,11 @@
     numbers=left,
     breaklines=true,
     caption=\lstname
+}
+
+\RecustomVerbatimCommand{\VerbatimInput}{VerbatimInput}{
+    fontsize=\footnotesize,
+    framesep=2em, % separation between frame and text
 }
 
 \begin{document}
@@ -52,7 +58,7 @@ Because a hint with this question identifies an LFSR as an ecryption scheme, and
 
 This program, when run with \verb`python break_lfsr.py <the cipher-text> Ur` prints:
 
-%\input{broken_lfsr_out}
+\VerbatimInput{broken_lfsr_out.txt}
 
 This output is clearly broken, after the 4th character.
 
