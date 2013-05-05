@@ -9,6 +9,7 @@
 
 from six import Iterator
 
+
 class LfsrRandom(Iterator):
 
     def __init__(self, charis, state):
