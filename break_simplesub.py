@@ -4,7 +4,6 @@ import random
 import re
 import sys
 
-from collections import deque
 from string import maketrans
 
 from utils.ngram_score import ngram_score
@@ -13,36 +12,38 @@ fitness = ngram_score(open('quadgrams.txt'))  # load our quadgram model
 
 
 def sub_decipher(text, key, original="ABCDEFGHIJKLMNOPQRSTUVWXYZ"):
-    return text.translate(
-        maketrans(original, ''.join(key))
-    )
+    return text.translate(maketrans(original, ''.join(key)))
 
 
 def human_sub_decipher(text, key, original="ABCDEFGHIJKLMNOPQRSTUVWXYZ"):
     key = ''.join(key)
-    key = key.upper() + key.lower()
     return text.translate(
-        maketrans(original.upper() + original.lower(), key)
+        maketrans(
+            original.upper() + original.lower(),
+            key.upper() + key.lower()
+        )
     )
 
 
-def break_simple_sub(ctext, max_retries=10, max_failures=1000, startkey="ABCDEFGHIJKLMNOPQRSTUVWXYZ"):
+def break_simple_sub(original_text, max_retries=5, max_failures=500, startkey="ABCDEFGHIJKLMNOPQRSTUVWXYZ"):
     """generator to break a simple substitution cipher hill-climb
-    trying a new start every 1000 failed attempts"""
+    trying a new start every max_failures failed attempts"""
 
-    original_text = ctext
     # make sure ciphertext has all spacing/punc removed and is uppercase
-    ctext = re.sub('[^A-Z]', '', ctext.upper())
+    ctext = re.sub('[^A-Z]', '', original_text.upper())
 
-    startkey = list(startkey)
+    # set parentkey to a new copy
     parentkey = list(startkey)
-    random.shuffle(parentkey)
-    bestscore = fitness.score(sub_decipher(ctext, parentkey))
-    bestkey = list(parentkey)
-    parentscore = bestscore
+
+    # set to a very low starting value
+    bestscore = parentscore = -99E99
+
     retries = 0
     while(retries < max_retries):
         counter = 0
+        # try to 'climb' a new 'hill' at random
+        random.shuffle(parentkey)
+        parentscore = fitness.score(sub_decipher(ctext, parentkey))
         # if the counter is greater than 1000 we've tried
         # too many attempts and need to move to a new 'hill'
         while(counter < max_failures):
@@ -79,9 +80,6 @@ def break_simple_sub(ctext, max_retries=10, max_failures=1000, startkey="ABCDEFG
 
         else:
             retries += 1
-        # try to 'climb' a new 'hill' at random
-        random.shuffle(parentkey)
-        parentscore = fitness.score(sub_decipher(ctext, parentkey))
 
 
 if __name__ == "__main__":

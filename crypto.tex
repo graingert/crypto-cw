@@ -65,7 +65,7 @@ This resulted in only one valid solution: valid as defined by a solution with on
 
 \section{Maths}
 
-\section{Mono-alphabetic Substitution}\label{mono}
+\section{Mono-alphabetic substitution}\label{mono}
 In this section we describe the results.
 
 \section{The miss-application of RC4 in WEP and WPA-TKIP}\label{conclusions}
@@ -74,22 +74,43 @@ We worked hard, and achieved very little.
 \bibliographystyle{ieeetr}
 \bibliography{main}
 \pagebreak
+
+
 \appendices
 \section{Linear feedback shift register}
 \subsection{Breaking LFSR}\label{break-lfsr}
 \lstinputlisting[language=Python]{break_lfsr.py}
 \pagebreak
+
 \subsection{Breaking LFSR output}\label{break-lfsr-out}
 \VerbatimInput{broken_lfsr.out.txt}
 \pagebreak
+
 \subsection{Brute forcing the last byte}\label{last-byte}
 \lstinputlisting[language=Python]{last_byte.py}
 \pagebreak
+
 \subsection{Mid-solution}\label{last-byte-out}
 \VerbatimInput{last_byte.out.txt}
 \pagebreak
+
 \subsection{Final Solution}\label{q1-solution}
 \VerbatimInput{q1_solution.out.txt}
+\pagebreak
+
+
+\section{Maths}
+\pagebreak
+
+\section{Mono-alphabetic substitution}
+\subsection{Hill-climbing mono-alphabetic substitution cracker}\label{break-simplesub}
+\lstinputlisting[language=Python]{break_simplesub.py}
+\pagebreak
+
+\subsection{Final Solution}\label{q3-solution}
+\VerbatimInput{q3_solution.out.txt}
+\pagebreak
+
 
 
 \end{document}
