@@ -63,12 +63,16 @@ An LFSR of degree 5 will repeat every 31 bits, however, referring back to the se
 
 A program, shown in appendix~\ref{last-byte}, was created to brute force the last byte of the repeating 32 bit key, assuming that the first 3 bytes were from a valid 31 bit LFSR key-stream.
 
-This resulted in only one valid solution: valid as defined by a solution with only printable characters.  This mid-stage cipher-text, shown in appendix~\ref{last-byte-out}, shows signs of a mono-alphabetic substitution cypher: repeated three letter words ``pna'' and ``gur'' indicating ``and'' and ``the'', long repeated words ``Ubjrire'', and valid use of punctuation such as commas and capitol letters after full-stops. As such this remaining cipher-text was decrypted using techniques as discussed in section~\ref{mono}.  The final solution is shown in appendix~\ref{q1-solution}.
+This resulted in only one valid solution: valid as defined by a solution with only printable characters.  This mid-stage cipher-text, shown in appendix~\ref{last-byte-out}, shows signs of a mono-alphabetic substitution cypher: repeated three letter words ``pna'' and ``gur'' potentially indicating ``and'' and ``the'', long repeated words ``Ubjrire'', and valid use of punctuation such as commas and capitol letters after full-stops. As such this remaining cipher-text was decrypted using techniques as discussed in section~\ref{mono}.  The final solution is shown in appendix~\ref{q1-solution}.
 
 \section{Maths}
 
 \section{Mono-alphabetic substitution}\label{mono}
-In this section we describe the results\cite{stochastic-searching}.
+In this challenge, another decryption challenge, the requirement is to decrypt a block of text included in appendix~\ref{q3-cyphertext}. This time there is no hint provided.
+
+The first clue that the cypher-text is the result of mono-alphabetic substitution is the use of repeated words such as ``uli'' and ``blf'' potentially indicating the English three letter words ``and'' and ``the''. While a frequency analysis would also be useful for solving these sorts of cyphers in general, this was not used because of the success of the automated simple substitution breaking program.
+
+A program, included in appendix~\ref{break-simplesub}, based on work by Lyons, J\cite{stochastic-searching} was used to successfully break the cypher. The solution is included in appendix~\ref{q2-solution}.
 
 \section{The miss-application of RC4 in WEP and WPA-TKIP}\label{conclusions}
 We worked hard, and achieved very little.
@@ -99,6 +103,9 @@ We worked hard, and achieved very little.
 \pagebreak
 
 \section{Mono-alphabetic substitution}
+\subsection{Cyphertext}\label{q3-cyphertext}
+\VerbatimInput{q3.out.txt}
+
 \subsection{Hill-climbing mono-alphabetic substitution cracker}\label{break-simplesub}
 \lstinputlisting[language=Python]{break_simplesub.py}
 
