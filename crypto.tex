@@ -1,8 +1,7 @@
 \documentclass[pdftex, 12pt, a4paper]{article}
 \usepackage[pdftex]{graphicx}
-\usepackage[utf8x]{inputenc}
+\usepackage[utf8]{inputenc}
 \usepackage{appendix}
-\usepackage{cite}
 \usepackage{rotating}
 \usepackage{pdflscape}
 \usepackage{hyperref}
@@ -14,6 +13,9 @@
 \usepackage{listings}
 \usepackage{fancyvrb}
 \usepackage{color}
+\usepackage[style=ieee]{biblatex}
+
+\bibliography{main}
 
 \title{Cryptography Assignment}
 \author{
@@ -66,15 +68,12 @@ This resulted in only one valid solution: valid as defined by a solution with on
 \section{Maths}
 
 \section{Mono-alphabetic substitution}\label{mono}
-In this section we describe the results.
+In this section we describe the results\cite{stochastic-searching}.
 
 \section{The miss-application of RC4 in WEP and WPA-TKIP}\label{conclusions}
 We worked hard, and achieved very little.
 
-\bibliographystyle{ieeetr}
-\bibliography{main}
-\pagebreak
-
+\printbibliography
 
 \appendices
 \section{Linear feedback shift register}
