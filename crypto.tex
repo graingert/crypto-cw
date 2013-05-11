@@ -81,6 +81,9 @@ The properties of generator polynomials can be used to determine if a polynomial
 These justifications can be tested using the two argument version of the ``hammgen'' function from GNU Octave~\cite{hammgen-octave}, also a function available in MATLAB~\cite{hammgen-matlab}. Using this function it is possible to determine if a polynomial is a generator polynomial of a hamming code or not: when given a non-generator polynomial is given as the function's second argument an exception is raised.  A program to test all of the given polynomials is shown in appendix~\ref{hammgen} and was used to also conclude that $f5(x)$ is a generator polynomial.
 
 \subsection{Part b}
+Using the ``hammgen'' function from GNU Octave~\cite{hammgen-octave} a program, shown in appendix~\ref{hammgen-hg}, was created to output the H and G matrices for $f5(x)$. See appendix~\ref{h-matrix} for the H matrix and appendix~\ref{g-matrix} for the G matrix.
+
+
 \subsection{Part c}
 
 \section{Mono-alphabetic substitution}\label{mono}
@@ -93,23 +96,27 @@ A program, included in appendix~\ref{break-simplesub}, based on work by Lyons, J
 \section{The miss-application of RC4 in WEP and WPA-TKIP}\label{conclusions}
 We worked hard, and achieved very little.
 
+\pagebreak
 \printbibliography
 
+\pagebreak
 \appendices
 \section{Linear feedback shift register}
-\subsection{Breaking LFSR}\label{break-lfsr}
+\subsection{Breaking LFSR}
+\subsubsection{Program}\label{break-lfsr}
 \lstinputlisting[language=Python]{break_lfsr.py}
 \pagebreak
 
-\subsection{Breaking LFSR output}\label{break-lfsr-out}
+\subsubsection{Breaking LFSR output}\label{break-lfsr-out}
 \VerbatimInput{broken_lfsr.out.txt}
 \pagebreak
 
-\subsection{Brute forcing the last byte}\label{last-byte}
+\subsection{Brute forcing the last byte}
+\subsubsection{Program}\label{last-byte}
 \lstinputlisting[language=Python]{last_byte.py}
 \pagebreak
 
-\subsection{Mid-solution}\label{last-byte-out}
+\subsubsection{Mid-solution}\label{last-byte-out}
 \VerbatimInput{last_byte.out.txt}
 
 \subsection{Final Solution}\label{q1-solution}
@@ -119,6 +126,15 @@ We worked hard, and achieved very little.
 \section{Hamming codes and generator polynomials}
 \subsection{Discovering valid generator polynomials}\label{hammgen}
 \lstinputlisting[language=Python]{generator_pols.py}
+\pagebreak
+
+\subsection{H and G matrices}
+\subsubsection{Program}\label{hammgen-hg}
+\lstinputlisting[language=Python]{h_g_matrix.py}
+\subsubsection{H matrix}\label{h-matrix}
+\VerbatimInput{h_matrix.out.txt}
+\subsubsection{G matrix}\label{g-matrix}
+\VerbatimInput{g_matrix.out.txt}
 
 \section{Mono-alphabetic substitution}
 \subsection{Cyphertext}\label{q3-cyphertext}
@@ -126,6 +142,7 @@ We worked hard, and achieved very little.
 
 \subsection{Hill-climbing mono-alphabetic substitution cracker}\label{break-simplesub}
 \lstinputlisting[language=Python]{break_simplesub.py}
+\pagebreak
 
 \subsection{Final Solution}\label{q3-solution}
 \VerbatimInput{q3_solution.out.txt}

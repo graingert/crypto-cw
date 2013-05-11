@@ -1,33 +1,27 @@
-import numpy as np
+from __future__ import print_function
 
+import sys
+from contextlib import closing
+
+import numpy as np
 from oct2py import Oct2Py
+from six import StringIO
 
 oc = Oct2Py()
 
 
-def multiply_matrices(A, B, fieldSize=2):
-    """http://ze.phyr.us/matrix-multiplication-in-galois-fields-with-python"""
-    assert(len(A[0]) == len(B))  # The number of columns of A must equal the number of rows of B
-
-    # Prepare an empty matrix with |rows(A)| rows and |columns(B)| columns.
-    C = [[0] * len(B[0]) for i in range(len(A))]
-
-    for ci in range(len(C)):
-        for cj in range(len(C[ci])):
-            C[ci][cj] = sum([(A[ci][i] * B[i][cj]) for i in range(len(A[0]))])
-            if fieldSize > 0:
-                C[ci][cj] %= fieldSize
-    return C
+def format_int_matrix(m):
+    with closing(StringIO()) as out:
+        for row in m.astype(dtype=int):
+            for item in row:
+                out.write(str(item))
+            out.write('\n')
+        return out.getvalue()
 
 
-h, g = oc.hammgen(6, np.array((1, 1, 0, 0, 0, 0, 1), dtype=np.float))
-
-print(("h matrix", h))
-print(("g matrix", g))
-
-
-code_words = np.array((
-    tuple("101001111000000000000000000000000000000000000000000000000000000"),
-    tuple("100001100000000000000000000000000000000000000000000000001000011"),
-    tuple("100001100000000000000000000010000000000000000000000000001000011")
-), dtype=float)
+if __name__ == "__main__":
+    h, g = oc.hammgen(6, np.array((1, 1, 0, 0, 0, 0, 1), dtype=np.float))
+    if sys.argv[1] == "h":
+        print(format_int_matrix(h))
+    elif sys.argv[1] == "g":
+        print(format_int_matrix(g))
