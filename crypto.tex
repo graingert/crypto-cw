@@ -14,6 +14,7 @@
 \usepackage{fancyvrb}
 \usepackage{color}
 \usepackage[style=ieee]{biblatex}
+\usepackage{mathtools}
 
 \bibliography{main}
 
@@ -65,7 +66,22 @@ A program, shown in appendix~\ref{last-byte}, was created to brute force the las
 
 This resulted in only one valid solution: valid as defined by a solution with only printable characters.  This mid-stage cipher-text, shown in appendix~\ref{last-byte-out}, shows signs of a mono-alphabetic substitution cypher: repeated three letter words ``pna'' and ``gur'' potentially indicating ``and'' and ``the'', long repeated words ``Ubjrire'', and valid use of punctuation such as commas and capitol letters after full-stops. As such this remaining cipher-text was decrypted using techniques as discussed in section~\ref{mono}.  The final solution is shown in appendix~\ref{q1-solution}.
 
-\section{Maths}
+\section{Hamming codes and generator polynomials}
+\subsection{Part a}
+The properties of generator polynomials can be used to determine if a polynomial is a generator polynomial.  A generator polynomial is also known as a primitive polynomial and ``primitive polynomials are also irreducible polynomials''~\cite{wolfram-primative}.  As such any polynomial that can be factorized modulus 2 is not a generator polynomial.
+
+\begin{description}
+    \item[$f1(x) = x^6 + x^3 + x^2 + x + 1$] is reducible because $f1(x) = (x^2+x+1)(x^4+x^3+1)$.
+    \item[$f2(x) = x^6 + x^5 + x^4 + x^3 + 1$] is reducible because $f2(x) = (x^2+x+1)(x^4+x+1)$.
+    \item[$f3(x) = x^6 + x^5 + x$] is reducible because $f3(x) = x(x^5 + x^4 + 1)$.
+    \item[$f4(x) = x^6 + x^5 +x^4 + x^2 +x + 1$] is reducible because $f4(x) = (x^2+x+1)(x+1)^4$.
+    \item[$f5(x) = x^6 + x + 1$] is a generator polynomial by elimination.
+\end{description}
+
+These justifications can be tested using the two argument version of the ``hammgen'' function from GNU Octave~\cite{hammgen-octave}, also a function available in MATLAB~\cite{hammgen-matlab}. Using this function it is possible to determine if a polynomial is a generator polynomial of a hamming code or not: when given a non-generator polynomial is given as the function's second argument an exception is raised.  A program to test all of the given polynomials is shown in appendix~\ref{hammgen} and was used to also conclude that $f5(x)$ is a generator polynomial.
+
+\subsection{Part b}
+\subsection{Part c}
 
 \section{Mono-alphabetic substitution}\label{mono}
 In this challenge, another decryption challenge, the requirement is to decrypt a block of text included in appendix~\ref{q3-cyphertext}. This time there is no hint provided.
@@ -98,9 +114,11 @@ We worked hard, and achieved very little.
 
 \subsection{Final Solution}\label{q1-solution}
 \VerbatimInput{q1_solution.out.txt}
-
-\section{Maths}
 \pagebreak
+
+\section{Hamming codes and generator polynomials}
+\subsection{Discovering valid generator polynomials}\label{hammgen}
+\lstinputlisting[language=Python]{generator_pols.py}
 
 \section{Mono-alphabetic substitution}
 \subsection{Cyphertext}\label{q3-cyphertext}
@@ -112,7 +130,6 @@ We worked hard, and achieved very little.
 \subsection{Final Solution}\label{q3-solution}
 \VerbatimInput{q3_solution.out.txt}
 \pagebreak
-
 
 
 \end{document}
