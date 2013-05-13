@@ -4,10 +4,8 @@ import sys
 from contextlib import closing
 
 import numpy as np
-from oct2py import Oct2Py
+from oct2py import octave as oc
 from six import StringIO
-
-oc = Oct2Py()
 
 
 def format_int_matrix(m):

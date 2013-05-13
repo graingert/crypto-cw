@@ -1,9 +1,7 @@
 from __future__ import print_function
 
 import numpy as np
-from oct2py import Oct2Py, Oct2PyError
-
-oc = Oct2Py()
+from oct2py import octave as oc, Oct2PyError
 
 pols = np.array((
     (1, 1, 1, 1, 0, 0, 1),
