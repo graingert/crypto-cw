@@ -7,7 +7,7 @@ install:
 - sudo apt-get install `cat apt-requirements.txt`
 - wget https://raw.github.com/graingert/Dropbox-Uploader/patch-1/dropbox_uploader.sh
   -O dropbox_uploader.sh
-- pip install --index-url=https://simple.crate.io -U -r requirements.txt
+- pip install --index-url=https://simple.crate.io -r requirements.txt
 script:
 - make
 after_success:

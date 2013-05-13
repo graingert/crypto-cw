@@ -1,1 +1,1 @@
-latex-xcolor texlive-latex-extra texlive-fonts-recommended texlive-fonts-extra biblatex texlive-bibtex-extra python-numpy octave-communications
+latex-xcolor texlive-latex-extra texlive-fonts-recommended texlive-fonts-extra biblatex texlive-bibtex-extra python-numpy python-scipy octave-communications
