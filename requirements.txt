@@ -2,4 +2,4 @@ six
 bitarray
 oct2py
 numpy
-#scipy
+scipy
