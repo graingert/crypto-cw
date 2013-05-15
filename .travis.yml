@@ -14,3 +14,35 @@ after_success:
 - if [ "$DROPBOX_UPLOADER" ]; then bash dropbox_uploader.sh upload crypto.pdf; fi
 virtualenv:
   system_site_packages: true
+env:
+  global:
+  - secure: ! 'cO1E/Sf0k1m/s54gx9MM4XOM45Hq0CwQU41qiehIF+VH9mVxTRhB+5T38u5g
+
+      K+e+wdecE86TguT+PcK0xgsbP41IojKU00CS62Fdw5wUyhpBZ7jerez8glNa
+
+      ZoHtkT1S6LoShI3D1zk90kRpWJ4flZolSodXKjOKRf++VAJkQmM='
+  - secure: ! 'QraCRe1Os5FVEwB0YjAA9Bqp6tXOuKZ0RtD6M+ODlVhA9VNnGVS9q2Iyqzd3
+
+      9J+/9IQOjI0LH8DE5Zsc6sV+JY4WBRwGxsLmNIN4T5VRKjQeqM3URNbZI4g3
+
+      ckjrosPAW/LxCbbeIEf6lCt8koBhvYJH7vq0UXVp0j2/G7qS+l4='
+  - secure: ! 'FLW+cQrTsZ/H0wNXBqs750zkenu8feZ0eTOxstH7cWCBBXg0rfA/nmzIzpS3
+
+      +etHEbOXXGh7rLo8RNVbGwl8B1uv2mz8oGnJaiVEl7hdcdUM9RS4JsTmqN5R
+
+      KoGhvKQVyI+ycyY5qahXfZCSGD8F5gRBGAPvS9BDZBo45J+dcN8='
+  - secure: ! 'GcQsiVpadfYsZaEwbKAkYq2vnxR4sWTZaTvBI56uLNZczwsTYHfi0kdKtE3A
+
+      A5BsrH0CZ0t/zg9gqM2eX9z48Pco/842Tu4jF6CkjtrA1w4AEivSeWySkeba
+
+      pD9o4F3srgZ+8tL4btD1H0ys9hS2ejFe0jeM8aHWoz15A+MFOCE='
+  - secure: ! 'SyHxuif9UaZg3TKD/Er9kWNsdAl0LaI1H4DOjimpDB5jVB5EKxevmQsoJkVO
+
+      2YIDduOa1NtUYCdbNZvVCRnrsJ13hGTdOy4cfkMFojl1iHrdQsIhiv5mJhxo
+
+      iBFNjN9mvgwO/E5dILJ1cfKAp8cm8QsgS5LCNqW14ZHEQqg/YJQ='
+  - secure: ! 'iKYfqV0ltdDhPOTw/icwet2zLSntdo6Bf+a/3Rm8/F0MtR0K6y1VgmCHQNIw
+
+      Qd/CnwlA5pgcbU3AjWo5MwlmhzJTb4FKrkc/yIPtbGUglR1wxfdNf5ps6XAu
+
+      lBszqgtfTgakZ8IHZxMulV/9k01Pc+ZgDsT1ak/pIHMwnFTtsvE='
