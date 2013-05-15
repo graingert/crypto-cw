@@ -9,7 +9,7 @@ install:
   -O dropbox_uploader.sh
 - pip install --index-url=https://simple.crate.io -r requirements.txt
 script:
-- make
+- make -j
 after_success:
 - if [ "$DROPBOX_UPLOADER" ]; then bash dropbox_uploader.sh upload crypto.pdf; fi
 virtualenv:
