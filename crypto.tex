@@ -57,7 +57,7 @@ The first observation about the cypher-text is that it is presented as a bitmap.
 \subsection{Compromising LFSR encryption}
 A hint with this question identifies an LFSR as the first encryption scheme, and gives away the crib of ``Ur''.  Because of this a program, shown in appendix~\ref{break-lfsr}, was created to brute force all possible LFSR sequences that result in the first characters of the plain-text being ``Ur''.
 
-The output of this program, when run with \verb`python break_lfsr.py <the cipher-text> Ur`, is shown in appendix~\ref{break-lfsr-out}.  This output is clearly incorrect: the output is corrupt after and including the 4th character.  Because only one output it possible with this crib, and LFSR degree something is wrong with the LFSR implementation.
+The output of this program, when run with arguments \textless{}the cipher-text\textgreater and ``Ur'', is shown in appendix~\ref{break-lfsr-out}.  This output is clearly incorrect: the output is corrupt after and including the 4th character.  Because only one output it possible with this crib, and LFSR degree something is wrong with the LFSR implementation.
 
 \subsection{Compromising a buggy LFSR encryption implementation}
 An LFSR of degree 5 will repeat every 31 bits, however, referring back to the second observation of the cipher-text there is a pattern of high bits that repeats every 32 bits. This observation is clearly contradicts the hint that the second encryption stage uses an LFSR of degree 5.
