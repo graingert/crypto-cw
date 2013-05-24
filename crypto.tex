@@ -152,7 +152,114 @@ A program, included in appendix~\ref{break-simplesub}, based on work by
 The solution is included in appendix~\ref{q3-solution}.
 
 \section{The miss-application of RC4 in WEP and WPA-TKIP}\label{conclusions}
-We worked hard, and achieved very little.
+
+\subsection{Part a}
+\subsubsection{What is WEP}
+Released with the original 802.11 standard in 1999
+Responsible for both authentication and encryption
+Name comes from the ``idea'' that it would provide the same security as a wired connection
+
+Uses a 40-bit shared key
+Only 40-bits to comply with US restrictions on exporting cryptography technology
+Brute-force was already practical when the protocol was designed
+Protocol extended by many manufacturers using a 104-bit key (also called 128-bit)
+The 104-bit keys operate in exactly the same way as 40-bit keys
+
+Uses the RC4 encryption algorithm from RSA Data Security
+
+\subsubsection{RC4}
+Stream cipher
+Simulates a one-time-pad using a pseudo random number generator (PRNG) seeded from a key
+Each bit of the plain-text is XORed with a bit of the key-stream
+
+If you restart the process each time you get the same key-stream each time
+C1⊕C2=P1⊕P2
+
+\subsubsection{Application of RC4 in WEP}
+Because RC4 is a stream cipher a missing bit would cause a misalignment with the key-stream
+Frames are expected to be lost so process is restarted each frame
+
+To prevent key-stream reuse, a random 24-bit Initialization Vector (IV) is appended to the shared key.
+
+\subsubsection{Application of CRC32 in WEP}
+Every frame includes an Integrity Check Value (ICV)
+CRC-32 hash of the plain-text is appended to the plain-text
+The receiver re-computes the CRC-32 hash of the message and if it does not match the frame is dropped
+
+\subsubsection{Flaws}
+
+\paragraph{ICV}
+WEP uses CRC-32 hash for Integrity Check Value (ICV)
+CRC is a poor cryptographic hash because it is a linear function of the message
+Check-sum algorithms are ``unsuitable as cryptographic hash functions''
+C'=C⊕(Δ,c(Δ))
+C: original, C': modified, Δ: changes, c(Δ): CRC-32 of Δ
+An attacker can flip any bit in the
+cipher-text and correctly adjust the encrypted hash to avoid detection
+
+\paragraph{Key-stream discovery}
+RC4 becomes vulnerable if two messages are encrypted using the same key-stream
+To protect against this, each frame has a random 24-bit Initialization Vector (IV)
+The probability of an IV being repeated after 4,096 messages becomes likely due to the ``birthday paradox''
+Can then determine plain text and key-stream
+
+\paragraph{Frame Injection}
+WEP has no anti-replay protection
+Can re-use known IV and key-stream (gained from previous attacks) to generate unlimited valid frames
+An attacker can capture frames and resend them
+Denial of Service or send malicious traffic
+
+\paragraph{Tews, Weinmann, and Psyhkin Shared Key Recovery}
+Possible to recover 104-bit shared key in less than a minute
+Uses the predictability of the ARP protocol: first 16 bytes known
+XOR known bytes with the cypher text bytes
+gets the first 128 bits of key-stream and IV
+with enough packets, shared key can be determined statistically
+Because no replay prevention, broadcast ARP requests to get more ARP responses
+
+\paragraph{The Caffe Latte Attack}
+Listen to a PROBE for an access point (AP)
+Create fake SSID for the AP
+Repeatedly challenge, and de-authenticate target client to force it to generate DHCP and ARP requests
+Don't need to be near the original SSID
+Just some client that has been configured to automatically connect to a WEP network
+Sit in a coffee shop and listen to clients
+
+\subsubsection{Fixes}
+
+\paragraph{WEP2}
+Extends shared key and IV to 128 bits
+Still allows IV re-use
+Still uses CRC-32 for ICV
+Proprietary so not well used
+\paragraph{WEPplus}
+Proprietary enhancement to WEP by Agere Systems
+Avoid ``Weak IVs'' in WEP
+Only effective when used at ``both ends''
+Doesn't prevent replay attacks
+Interestingly Linux Kernel > 2.6.20 includes protection against weak IVs
+Proprietary so not well used
+\paragraph{Dynamic WEP}
+Give each user a dynamically generated key
+Never standardized, proprietary, so not well used
+Idea carried over into 802.11i
+
+\paragraph{WPA, WPA2-TKIP}
+Just the minimum support required to buy time to develop WPA2
+Can only use Temporal Key Integrity Protocol (TKIP)
+TKIP still uses RC4, but with a better implementation:
+
+Uses key mixing for shared key and IV
+Prevents using the same encryption key twice
+Uses a sequence counter to prevent replay attacks
+
+\paragraph{WPA2-AES}
+WPA2 allows the use of the Advanced Encryption Standard (AES) encryption as well as TKIP
+AES is a block cipher, so none of the repeated key attacks apply
+When used with AES, WPA2 might actually be secure, and is now the recommended wireless security default.
+
+\subsection{Part b}
+Aircrack-ng, on soton campus.
 
 \pagebreak
 \printbibliography
