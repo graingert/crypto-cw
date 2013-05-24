@@ -147,18 +147,18 @@ While a frequency analysis would also be useful for solving these sorts of cyphe
 general, this was not used because of the success of the automated simple
 substitution breaking program.
 
-\section{The miss-application of RC4 in WEP}\label{conclusions}
+\section{The miss-application of RC4 and CRC32 in WEP}\label{conclusions}
 
 \subsection{Part a}
 \subsubsection{What is WEP}
-The WEP, or ``Wired Equivalent Privacy'', the security algorithm was released with the original 802.11 standard in 1999\cite{802.11}.  This system is designed to be be responsible for both authentication (access control), encryption (confidentiality) and data integrity in Wi-Fi networks. The name comes from the ``idea'' that it would provide the same security as a wired connection, however according to \textcite{intercepting-wifi}, ``despite employing the well-known and believed-secure RC4 cipher, WEP contains several major security flaws.''.
+The Wired Equivalent Privacy (WEP) security algorithm was released with the original 802.11 standard in 1999\cite{802.11}. This system was designed to be be responsible for both authentication (access control), encryption (confidentiality) and data integrity in Wi-Fi networks.
 
-\subsubsection{RC4}
-The RC4 encryption algorithm from RSA Data Security is a stream cipher. Stream ciphers simulate the operation of a one-time-pad using a pseudo random number generator (PRNG) seeded from a key\cite{otp-faq}.
+The name comes from the intention that it would provide the same level of security as a wired connection, however according to \textcite{intercepting-wifi}, ``despite employing the well-known and believed-secure RC4 cipher, WEP contains several major security flaws.''.  The answer to this question aims to detain the cryptographic tools used and the flaws introduced by their miss-application.
 
-When encrypting binary data, each bit of the plain-text is XORed with a bit of the generated key-stream.
+\subsubsection{Rivest Cipher 4}
+The Rivest Cipher 4 (RC4) encryption algorithm from RSA Data Security is a stream cipher, these ciphers simulate the operation of a one-time-pad using a pseudo random number generator (PRNG) seeded from a key\cite{otp-faq}. When encrypting binary data, each bit of the plain-text is XORed with a bit of the generated key-stream. To decrypt the system the same random cipher-stream is generated using the same key, or seed to the RC4 cipher.
 
-If you restart the process each time you get the same key-stream each time, as shown in equation~\ref{eq:xor}.
+One major disadvantage of one time pad, or stream cipher, systems is that if two messages are encrypted with the same key the cipher-texts of those messages can be subjected to cryptanalysis.  The reason for this, shown in equation~\ref{eq:xor} or graphically in equation~\ref{eq:img-xor}, is that the cipher stream can be eliminated by calculating the xor of the two related cipher-texts. An even worse situation is when a message using the same cipher-stream as a previous message with one of those messages containing known plain-text, with this key information for future messages can be derived.
 
 \begin{subequations}
     \begin{align}
@@ -168,8 +168,6 @@ If you restart the process each time you get the same key-stream each time, as s
     \end{align}
 \end{subequations}
 
-The reason this equality is a problem in cryptography is shown graphically in equation~\ref{eq:img-xor}
-
 \begin{figure}[htb]
 \begin{subequations}
     \begin{align}
@@ -178,20 +176,27 @@ The reason this equality is a problem in cryptography is shown graphically in eq
         \overbrace{\includegraphics[height=8ex]{img/sendcashe}}^{C_1} \oplus \overbrace{\includegraphics[height=8ex]{img/smileye}}^{C_2} = \overbrace{\includegraphics[height=8ex]{img/smicash1}}^{P_1 \oplus P_2}\label{eq:img-xor}
     \end{align}
 \end{subequations}
-\caption{Graphical representation of why reusing a keystream is dangerous cryptographically (source \protect\cite{stream-reuse})}
+\caption{Graphical representation of why reusing a keystream is dangerous cryptographically: It is clear that some plain-text can be determined from this method (source \protect\cite{stream-reuse})}
 \end{figure}
 
 \subsubsection{Application of RC4 in WEP}
-WEP uses a 40-bit shared key to initialize the same RC4 state for all stations. The reason for using only 40-bits was to comply with US restrictions on exporting cryptography technology\cite{wep-evolution}.
+WEP uses a 40-bit shared key to initialize the same RC4 state for all authenticated stations, the reason for using only 40-bits was to comply with US restrictions on exporting cryptography technology\cite{wep-evolution}.
 
-Because RC4 is a stream cipher any missing data would cause a misalignment with the key-stream. Because in wifi frames are expected to be lost the process is restarted each frame.  To prevent key-stream reuse, a random 24-bit Initialization Vector (IV)\label{p:iv} is appended to the shared key.
+RC4 is a stream-cipher and so any missing data causes a misalignment with the key-stream this is a major problem in Wi-Fi, or any Ethernet based protocol, where frames are expected to be lost.
+To avoid misalignment problems the RC4 stream is restarted each frame. This is not the intended use of a stream cipher therefore stream reuse must be prevented. In WEP this is done using a public random 24-bit Initialization Vector (IV)~\label{p:iv}.  The vast majority of the flaws of WEP are due to this misuse of a stream-cipher. This process is shown in figure~\ref{fig:wepop}.
 
 \subsubsection{Application of CRC32 in WEP}
-Every frame includes an Integrity Check Value (ICV) which is the CRC-32 hash of the plain-text, appended to the plain-text.  The receiver re-computes the CRC-32 hash of the message and if it does not match the frame is dropped
+Every frame includes an Integrity Check Value (ICV) which is the Cyclic Redundancy Check (CRC-32) hash of the plain-text appended to the plain-text prior to encryption the receiver then re-computes the CRC-32 hash of the message after decryption and if it does not match the frame is dropped. This process is also shown in figure~\ref{fig:wepop}.
+
+\begin{figure}[htb]
+\center
+\includegraphics[height=0.9\linewidth]{img/wepOperation}\label{fig:wepop}
+\caption{Diagram showing the encryption and decryption operations of WEP (source \protect\cite{wep-evolution})}
+\end{figure}
 
 \subsubsection{Flaws}
 
-\paragraph{ICV}
+\paragraph{Integrity Check Value}
 The CRC used in the ICV is a poor cryptographic hash because it is a linear function of the message. Check-sum algorithms are ``unsuitable as cryptographic hash functions''\cite{wiki-crc}. Equation~\ref{eq:crc} shows how to calculate the CRC hash of the modified plain-text, without knowing that original plain-text.
 
 \begin{equation}\label{eq:crc}
@@ -203,7 +208,7 @@ Where $C$ is the original CRC, $C'$ is the CRC of the modified data, $\Delta$ is
 As such an attacker can flip any bit in the cipher-text and correctly adjust the encrypted hash to avoid detection, rendering any data integrity checks pointless.
 
 \paragraph{Small Key Space}
-Brute-force attacks on WEP were already practical when the protocol was designed with only 40-bits of key.  The protocol was extended by many manufacturers using a 104-bit key (also called 128-bit because a 104-bit key plus a 24-bit IV totals to 128-bits).  The 104-bit keys operate in exactly the same way as 40-bit keys, except with a longer key.
+Brute-force attacks on WEP were already practical when the protocol was designed with only 40-bits of key.  The protocol was extended by many manufacturers using a 104-bit key (also called 128-bit because a 104-bit key plus a 24-bit IV totals to 128-bits).  The 104-bit keys operate in exactly the same way as 40-bit keys except with a longer key.
 
 \paragraph{Key-stream discovery}
 RC4 becomes vulnerable if two messages are encrypted using the same key-stream.  As discussed in paragraph~\ref{p:iv} each frame has a random 24-bit Initialization Vector (IV).  Unfortunately due to the very short IV length the probability of an IV being repeated after 4,096 messages becomes likely.
@@ -211,7 +216,7 @@ RC4 becomes vulnerable if two messages are encrypted using the same key-stream. 
 The plain text and key-stream can then be discovered using equation~\ref{eq:xor}.
 
 \paragraph{Frame Injection}
-WEP has no anti-replay protection, ie no sequence number unless included in a protocol at another layer eg TCP. As such an attacker can re-use a known IV and key-stream (gained from previous attacks) to generate unlimited valid frames.  An attacker can capture frames and resend them resulting in a Denial of Service or the ability to send other malicious traffic.
+WEP has no anti-replay protection: no sequence number included in the protocol to avoid. As such an attacker can replay previous frames and re-use a known IV and key-stream (gained from previous attacks) to generate unlimited valid frames.  An attacker can capture frames and resend them resulting in a Denial of Service or the ability to send other malicious traffic.
 
 \paragraph{Shared Key Recovery}
 \textcite{tews2007breaking} published a method to recover a 104-bit shared WEP key ``in less than 60 seconds''  The method uses the predictability of the ARP protocol: first 16 bytes are known because it is the MAC address of the station.
@@ -223,10 +228,10 @@ The Caffe Latte attack, proposed by \textcite{cafe}, aims to discover a WEP key 
 
 The steps of the attack involve:
 \begin{enumerate}
-    \item Listen to a PROBE for an access point (AP)
-    \item Create fake SSID for the AP
-    \item Repeatedly challenge, and de-authenticate target client to force it to generate DHCP and ARP requests
-    \item Use Shared Key Recovery to recover the key
+    \item Listen to a PROBE for an access point (AP).
+    \item Create fake SSID for the AP.
+    \item Repeatedly challenge, and de-authenticate target client to force it to generate DHCP and ARP requests.
+    \item Use Shared Key Recovery to recover the key.
 \end{enumerate}
 
 \subsubsection{Fixes}
@@ -239,19 +244,19 @@ The system is proprietary so not well used.
 Gives each user a dynamically generated wep key based off a master key. This system was never standardized, proprietary, so not well used. The idea was however carried over into 802.11i.
 
 \paragraph{WPA}
-WPA was created with just the minimum support required to buy time to develop WPA2.  Can only use Temporal Key Integrity Protocol (TKIP), with some ideas from dynamic WEP. TKIP still uses RC4, but with a better implementation:
+WPA was created with just the minimum support required to buy time to develop WPA2.  The protocol uses Temporal Key Integrity Protocol (TKIP), combining ideas from the previously discussed WEP protocol extensions. TKIP still uses RC4, but with a better implementation:
 
 \begin{itemize}
-\item Uses key mixing for shared key and IV
-\item Prevents using the same encryption key twice
-\item Uses a sequence counter to prevent replay attacks
+\item Uses key mixing for shared key and IV.
+\item Ovoids using the same cipher-stream twice.
+\item Uses a sequence counter to prevent replay attacks.
 \end{itemize}
 
 This protocol was carried forward to WPA2 as WPA2-TKIP.
 
 \paragraph{WPA2-AES}
 WPA2-AES uses the Advanced Encryption Standard (AES) encryption in CCB mode.
-AES is a block cipher, so none of the repeated key attacks apply.  When used with AES, WPA2 is believed to be secure, and is now the recommended wireless security default.
+AES is a block cipher, so none of the discovered WEP flaws practically apply.  WPA2 When used with AES, a secure password and unique SSID is believed to be secure and is now the recommended wireless security default.
 
 \subsection{Part b}
 Aircrack-ng, on soton campus.
