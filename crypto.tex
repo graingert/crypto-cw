@@ -242,7 +242,7 @@ The system is proprietary so not well used.
 \paragraph{Dynamic WEP}
 Gives each user a dynamically generated wep key based off a master key. This system was never standardized, proprietary, so not well used. The idea was however carried over into 802.11i.
 
-\paragraph{WPA, WPA2-TKIP}
+\paragraph{WPA}
 WPA was created with just the minimum support required to buy time to develop WPA2.  Can only use Temporal Key Integrity Protocol (TKIP), with some ideas from dynamic WEP. TKIP still uses RC4, but with a better implementation:
 
 \begin{itemize}
@@ -250,6 +250,8 @@ WPA was created with just the minimum support required to buy time to develop WP
 \item Prevents using the same encryption key twice
 \item Uses a sequence counter to prevent replay attacks
 \end{itemize}
+
+This protocol was carried forward to WPA2 as WPA2-TKIP.
 
 \paragraph{WPA2-AES}
 WPA2-AES uses the Advanced Encryption Standard (AES) encryption in CCB mode.
