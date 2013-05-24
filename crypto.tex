@@ -162,7 +162,7 @@ RC4 is a stream cipher and as such simulates a one-time-pad using a pseudo rando
 
 When encrypting binary data, each bit of the plain-text is XORed with a bit of the generated key-stream.
 
-If you restart the process each time you get the same key-stream each time, as shown in \ref{eq:xor}.
+If you restart the process each time you get the same key-stream each time, as shown in equation~\ref{eq:xor}.
 
 \begin{subequations}
     \begin{align}
@@ -172,8 +172,9 @@ If you restart the process each time you get the same key-stream each time, as s
     \end{align}
 \end{subequations}
 
-The reason this equality is a problem in cryptography is shown graphically in Figure~\ref{fig:xor}
+The reason this equality is a problem in cryptography is shown graphically in equation~\ref{eq:img-xor}
 
+\begin{figure}[htb]
 \begin{subequations}
     \begin{align}
         \overbrace{\includegraphics[height=8ex]{img/sendcash1}}^{P_1} \oplus \overbrace{\includegraphics[height=8ex]{img/key1}}^{KS} = \overbrace{\includegraphics[height=8ex]{img/sendcashe}}^{C_1},\\
@@ -181,19 +182,13 @@ The reason this equality is a problem in cryptography is shown graphically in Fi
         \overbrace{\includegraphics[height=8ex]{img/sendcashe}}^{C_1} \oplus \overbrace{\includegraphics[height=8ex]{img/smileye}}^{C_2} = \overbrace{\includegraphics[height=8ex]{img/smicash1}}^{P_1 \oplus P_2}\label{eq:img-xor}
     \end{align}
 \end{subequations}
-
-\begin{figure}[htb]
-    \centering
-    \includegraphics[width=0.9\textwidth ]{img/smicash1}
-    \caption{Graphical explanation of why reusing a keystream is dangerous cryptographically (source \protect\cite{stream-reuse})}
-    \label{fig:xor}
+\caption{Graphical explanation of why reusing a keystream is dangerous cryptographically (source \protect\cite{stream-reuse})}
 \end{figure}
 
 \subsubsection{Application of RC4 in WEP}
-Because RC4 is a stream cipher a missing bit would cause a misalignment with the key-stream
-Frames are expected to be lost so process is restarted each frame
+WEP uses a 40-bit shared key to initialize the same RC4 state for all stations. The reason for using only 40-bits was to comply with US restrictions on exporting cryptography technology\cite{wep-evolution}.
 
-To prevent key-stream reuse, a random 24-bit Initialization Vector (IV) is appended to the shared key.
+Because RC4 is a stream cipher any missing data would cause a misalignment with the key-stream. Because in wifi frames are expected to be lost the process is restarted each frame.  To prevent key-stream reuse, a random 24-bit Initialization Vector (IV) is appended to the shared key.
 
 \subsubsection{Application of CRC32 in WEP}
 Every frame includes an Integrity Check Value (ICV)
@@ -204,8 +199,6 @@ The receiver re-computes the CRC-32 hash of the message and if it does not match
 
 \paragraph{Small Key Space}
 
-WEP uses a 40-bit shared key
-Only 40-bits to comply with US restrictions on exporting cryptography technology
 Brute-force was already practical when the protocol was designed
 Protocol extended by many manufacturers using a 104-bit key (also called 128-bit)
 The 104-bit keys operate in exactly the same way as 40-bit keys
