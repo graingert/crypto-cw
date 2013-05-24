@@ -155,25 +155,31 @@ The solution is included in appendix~\ref{q3-solution}.
 
 \subsection{Part a}
 \subsubsection{What is WEP}
-Released with the original 802.11 standard in 1999
-Responsible for both authentication and encryption
-Name comes from the ``idea'' that it would provide the same security as a wired connection
-
-Uses a 40-bit shared key
-Only 40-bits to comply with US restrictions on exporting cryptography technology
-Brute-force was already practical when the protocol was designed
-Protocol extended by many manufacturers using a 104-bit key (also called 128-bit)
-The 104-bit keys operate in exactly the same way as 40-bit keys
-
-Uses the RC4 encryption algorithm from RSA Data Security
+The WEP, or ``Wired Equivalent Privacy'', the security algorithm was released with the original 802.11 standard in 1999\cite{802.11}.  This system is designed to be be responsible for both authentication (access control), encryption (confidentiality) and data integrity in Wi-Fi networks. The name comes from the ``idea'' that it would provide the same security as a wired connection, however according to \textcite{intercepting-wifi}, ``despite employing the well-known and believed-secure RC4 cipher, WEP contains several major security flaws.''.
 
 \subsubsection{RC4}
-Stream cipher
-Simulates a one-time-pad using a pseudo random number generator (PRNG) seeded from a key
-Each bit of the plain-text is XORed with a bit of the key-stream
+RC4 is a stream cipher and as such simulates a one-time-pad using a pseudo random number generator (PRNG) seeded from a key\cite{otp-faq}.
 
-If you restart the process each time you get the same key-stream each time
-C1 xor C2=P1 xor P2
+When encrypting binary data, each bit of the plain-text is XORed with a bit of the generated key-stream.
+
+If you restart the process each time you get the same key-stream each time, as shown in \ref{eq:xor}.
+
+\begin{subequations}
+    \begin{align}
+        P_1 \oplus KS = C_1,\\
+        P_2 \oplus KS = C_2,\\
+        C_1 \oplus C_2 = P_1 \oplus P_2\label{eq:xor}
+    \end{align}
+\end{subequations}
+
+The reason this equality is a problem in cryptography is shown graphically in Figure~\ref{fig:xor}
+
+\begin{figure}[htb]
+    \centering
+    \includegraphics[width=0.9\textwidth ]{img/smicash1}
+    \caption{Graphical explanation of why reusing a keystream is dangerous cryptographically (source \protect\cite{stream-reuse})}
+    \label{fig:xor}
+\end{figure}
 
 \subsubsection{Application of RC4 in WEP}
 Because RC4 is a stream cipher a missing bit would cause a misalignment with the key-stream
@@ -187,6 +193,16 @@ CRC-32 hash of the plain-text is appended to the plain-text
 The receiver re-computes the CRC-32 hash of the message and if it does not match the frame is dropped
 
 \subsubsection{Flaws}
+
+\paragraph{Small Key Space}
+
+WEP uses a 40-bit shared key
+Only 40-bits to comply with US restrictions on exporting cryptography technology
+Brute-force was already practical when the protocol was designed
+Protocol extended by many manufacturers using a 104-bit key (also called 128-bit)
+The 104-bit keys operate in exactly the same way as 40-bit keys
+
+Uses the RC4 encryption algorithm from RSA Data Security
 
 \paragraph{ICV}
 WEP uses CRC-32 hash for Integrity Check Value (ICV)
