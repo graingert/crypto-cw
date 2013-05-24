@@ -173,7 +173,7 @@ Simulates a one-time-pad using a pseudo random number generator (PRNG) seeded fr
 Each bit of the plain-text is XORed with a bit of the key-stream
 
 If you restart the process each time you get the same key-stream each time
-C1⊕C2=P1⊕P2
+C1 xor C2=P1 xor P2
 
 \subsubsection{Application of RC4 in WEP}
 Because RC4 is a stream cipher a missing bit would cause a misalignment with the key-stream
@@ -192,8 +192,8 @@ The receiver re-computes the CRC-32 hash of the message and if it does not match
 WEP uses CRC-32 hash for Integrity Check Value (ICV)
 CRC is a poor cryptographic hash because it is a linear function of the message
 Check-sum algorithms are ``unsuitable as cryptographic hash functions''
-C'=C⊕(Δ,c(Δ))
-C: original, C': modified, Δ: changes, c(Δ): CRC-32 of Δ
+C'=C xor ( delta ,c( delta ))
+C: original, C': modified, delta : changes, c( delta ): CRC-32 of delta
 An attacker can flip any bit in the
 cipher-text and correctly adjust the encrypted hash to avoid detection
 
@@ -237,7 +237,7 @@ Proprietary enhancement to WEP by Agere Systems
 Avoid ``Weak IVs'' in WEP
 Only effective when used at ``both ends''
 Doesn't prevent replay attacks
-Interestingly Linux Kernel > 2.6.20 includes protection against weak IVs
+Interestingly Linux Kernel \textgreater 2.6.20 includes protection against weak IVs
 Proprietary so not well used
 \paragraph{Dynamic WEP}
 Give each user a dynamically generated key
