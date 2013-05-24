@@ -158,7 +158,7 @@ The solution is included in appendix~\ref{q3-solution}.
 The WEP, or ``Wired Equivalent Privacy'', the security algorithm was released with the original 802.11 standard in 1999\cite{802.11}.  This system is designed to be be responsible for both authentication (access control), encryption (confidentiality) and data integrity in Wi-Fi networks. The name comes from the ``idea'' that it would provide the same security as a wired connection, however according to \textcite{intercepting-wifi}, ``despite employing the well-known and believed-secure RC4 cipher, WEP contains several major security flaws.''.
 
 \subsubsection{RC4}
-RC4 is a stream cipher and as such simulates a one-time-pad using a pseudo random number generator (PRNG) seeded from a key\cite{otp-faq}.
+The RC4 encryption algorithm from RSA Data Security is a stream cipher. Stream ciphers simulate the operation of a one-time-pad using a pseudo random number generator (PRNG) seeded from a key\cite{otp-faq}.
 
 When encrypting binary data, each bit of the plain-text is XORed with a bit of the generated key-stream.
 
@@ -188,92 +188,72 @@ The reason this equality is a problem in cryptography is shown graphically in eq
 \subsubsection{Application of RC4 in WEP}
 WEP uses a 40-bit shared key to initialize the same RC4 state for all stations. The reason for using only 40-bits was to comply with US restrictions on exporting cryptography technology\cite{wep-evolution}.
 
-Because RC4 is a stream cipher any missing data would cause a misalignment with the key-stream. Because in wifi frames are expected to be lost the process is restarted each frame.  To prevent key-stream reuse, a random 24-bit Initialization Vector (IV) is appended to the shared key.
+Because RC4 is a stream cipher any missing data would cause a misalignment with the key-stream. Because in wifi frames are expected to be lost the process is restarted each frame.  To prevent key-stream reuse, a random 24-bit Initialization Vector (IV)\label{p:iv} is appended to the shared key.
 
 \subsubsection{Application of CRC32 in WEP}
-Every frame includes an Integrity Check Value (ICV)
-CRC-32 hash of the plain-text is appended to the plain-text
-The receiver re-computes the CRC-32 hash of the message and if it does not match the frame is dropped
+Every frame includes an Integrity Check Value (ICV) which is the CRC-32 hash of the plain-text, appended to the plain-text.  The receiver re-computes the CRC-32 hash of the message and if it does not match the frame is dropped
 
 \subsubsection{Flaws}
 
-\paragraph{Small Key Space}
-
-Brute-force was already practical when the protocol was designed
-Protocol extended by many manufacturers using a 104-bit key (also called 128-bit)
-The 104-bit keys operate in exactly the same way as 40-bit keys
-
-Uses the RC4 encryption algorithm from RSA Data Security
-
 \paragraph{ICV}
-WEP uses CRC-32 hash for Integrity Check Value (ICV)
-CRC is a poor cryptographic hash because it is a linear function of the message
-Check-sum algorithms are ``unsuitable as cryptographic hash functions''
-C'=C xor ( delta ,c( delta ))
-C: original, C': modified, delta : changes, c( delta ): CRC-32 of delta
-An attacker can flip any bit in the
-cipher-text and correctly adjust the encrypted hash to avoid detection
+The CRC used in the ICV is a poor cryptographic hash because it is a linear function of the message. Check-sum algorithms are ``unsuitable as cryptographic hash functions''\cite{wiki-crc}. Equation~\ref{eq:crc} shows how to calculate the CRC hash of the modified plain-text, without knowing that original plain-text.
+
+\begin{equation}\label{eq:crc}
+C'=C \oplus (\Delta ,c(\Delta)),
+\end{equation}
+
+Where $C$ is the original CRC, $C'$ is the CRC of the modified data, $\Delta$ is the changes made to the plain-text, and $c(\Delta)$ is the CRC-32 of $\Delta$.
+
+As such an attacker can flip any bit in the cipher-text and correctly adjust the encrypted hash to avoid detection, rendering any data integrity checks pointless.
+
+\paragraph{Small Key Space}
+Brute-force attacks on WEP were already practical when the protocol was designed with only 40-bits of key.  The protocol was extended by many manufacturers using a 104-bit key (also called 128-bit because a 104-bit key plus a 24-bit IV totals to 128-bits).  The 104-bit keys operate in exactly the same way as 40-bit keys, except with a longer key.
 
 \paragraph{Key-stream discovery}
-RC4 becomes vulnerable if two messages are encrypted using the same key-stream
-To protect against this, each frame has a random 24-bit Initialization Vector (IV)
-The probability of an IV being repeated after 4,096 messages becomes likely due to the ``birthday paradox''
-Can then determine plain text and key-stream
+RC4 becomes vulnerable if two messages are encrypted using the same key-stream.  As discussed in paragraph~\ref{p:iv} each frame has a random 24-bit Initialization Vector (IV).  Unfortunately due to the very short IV length the probability of an IV being repeated after 4,096 messages becomes likely.
+
+The plain text and key-stream can then be discovered using equation~\ref{eq:xor}.
 
 \paragraph{Frame Injection}
-WEP has no anti-replay protection
-Can re-use known IV and key-stream (gained from previous attacks) to generate unlimited valid frames
-An attacker can capture frames and resend them
-Denial of Service or send malicious traffic
+WEP has no anti-replay protection, ie no sequence number unless included in a protocol at another layer eg TCP. As such an attacker can re-use a known IV and key-stream (gained from previous attacks) to generate unlimited valid frames.  An attacker can capture frames and resend them resulting in a Denial of Service or the ability to send other malicious traffic.
 
-\paragraph{Tews, Weinmann, and Psyhkin Shared Key Recovery}
-Possible to recover 104-bit shared key in less than a minute
-Uses the predictability of the ARP protocol: first 16 bytes known
-XOR known bytes with the cypher text bytes
-gets the first 128 bits of key-stream and IV
-with enough packets, shared key can be determined statistically
-Because no replay prevention, broadcast ARP requests to get more ARP responses
+\paragraph{Shared Key Recovery}
+\textcite{tews2007breaking} published a method to recover a 104-bit shared WEP key ``in less than 60 seconds''  The method uses the predictability of the ARP protocol: first 16 bytes are known because it is the MAC address of the station.
+The method XORs known bytes with the cypher text bytes resulting in the first 128 bits of key-stream and IV. With enough ARP packets, the shared key can be determined statistically.
+The inventive step is to take advantage of the lack of replay prevention, and broadcast captured ARP requests to get more ARP responses.
 
 \paragraph{The Caffe Latte Attack}
-Listen to a PROBE for an access point (AP)
-Create fake SSID for the AP
-Repeatedly challenge, and de-authenticate target client to force it to generate DHCP and ARP requests
-Don't need to be near the original SSID
-Just some client that has been configured to automatically connect to a WEP network
-Sit in a coffee shop and listen to clients
+The Caffe Latte attack, proposed by \textcite{cafe}, aims to discover a WEP key without access to the original AP using information from only the client stations that have the WEP key. The attack is so named because of the possibility to sit in a coffee shop and listen to clients.
+
+The steps of the attack involve:
+\begin{enumerate}
+    \item Listen to a PROBE for an access point (AP)
+    \item Create fake SSID for the AP
+    \item Repeatedly challenge, and de-authenticate target client to force it to generate DHCP and ARP requests
+    \item Use Shared Key Recovery to recover the key
+\end{enumerate}
 
 \subsubsection{Fixes}
-
+Because of these flaws various proposals have been put forward to reduce the security impact.
 \paragraph{WEP2}
-Extends shared key and IV to 128 bits
-Still allows IV re-use
-Still uses CRC-32 for ICV
-Proprietary so not well used
-\paragraph{WEPplus}
-Proprietary enhancement to WEP by Agere Systems
-Avoid ``Weak IVs'' in WEP
-Only effective when used at ``both ends''
-Doesn't prevent replay attacks
-Interestingly Linux Kernel \textgreater 2.6.20 includes protection against weak IVs
-Proprietary so not well used
+Extends shared key and IV to 128 bits. However the system is still vulnerable because it still allows IV re-use and still uses CRC-32 for the ICV.
+\paragraph{WEPplus} a proprietary enhancement to WEP by Agere Systems: simply Avoids repeated ``Weak IVs'' in WEP.  Only effective when used at ``both ends'', on both client station and AP. Still doesn't prevent replay attacks.
+The system is proprietary so not well used.
 \paragraph{Dynamic WEP}
-Give each user a dynamically generated key
-Never standardized, proprietary, so not well used
-Idea carried over into 802.11i
+Gives each user a dynamically generated wep key based off a master key. This system was never standardized, proprietary, so not well used. The idea was however carried over into 802.11i.
 
 \paragraph{WPA, WPA2-TKIP}
-Just the minimum support required to buy time to develop WPA2
-Can only use Temporal Key Integrity Protocol (TKIP)
-TKIP still uses RC4, but with a better implementation:
+WPA was created with just the minimum support required to buy time to develop WPA2.  Can only use Temporal Key Integrity Protocol (TKIP), with some ideas from dynamic WEP. TKIP still uses RC4, but with a better implementation:
 
-Uses key mixing for shared key and IV
-Prevents using the same encryption key twice
-Uses a sequence counter to prevent replay attacks
+\begin{itemize}
+\item Uses key mixing for shared key and IV
+\item Prevents using the same encryption key twice
+\item Uses a sequence counter to prevent replay attacks
+\end{itemize}
 
 \paragraph{WPA2-AES}
-WPA2 allows the use of the Advanced Encryption Standard (AES) encryption as well as TKIP
-AES is a block cipher, so none of the repeated key attacks apply
-When used with AES, WPA2 might actually be secure, and is now the recommended wireless security default.
+WPA2-AES uses the Advanced Encryption Standard (AES) encryption in CCB mode.
+AES is a block cipher, so none of the repeated key attacks apply.  When used with AES, WPA2 is believed to be secure, and is now the recommended wireless security default.
 
 \subsection{Part b}
 Aircrack-ng, on soton campus.
