@@ -20,9 +20,9 @@
 
 \title{Cryptography Assignment}
 \author{
-        Thomas A. Grainger \\
-                Department of Electronics and Computer Science\\
-        University of Southampton\\
+    Thomas A. Grainger \\
+    Department of Electronics and Computer Science\\
+    University of Southampton\\
 }
 \date{\today}
 
@@ -44,7 +44,7 @@
 
 \begin{abstract}
 This report aims to solve a series of challenges set by \textcite{instructions},
-aiming for both thoroughness of methodology and accuracy of solution.  The
+aiming for both thoroughness of methodology and accuracy of solution. The
 cryptographic decryption challenges demonstrate the use of Python as a useful
 tool to create automated cipher decryption systems.
 \end{abstract}
@@ -57,9 +57,9 @@ The problem set forth in this challenge is to decrypt what appears to be a block
 of hexadecimal encoded data.
 
 The first observation about the cypher-text is that it is presented as a bitmap.
-After some analysis, not discussed in this report, this bitmap appears to
-contain no information encoded using stegonographic techniques.  The second, is
-that there is a pattern of high bits that repeats every 32 bits.
+After some analysis, not discussed in this report, the bitmap appears to
+contain no information embedded using stegonographic techniques.  The second, is
+that there is a pattern of high bits that repeat every 32 bits.
 
 \subsection{Compromising LFSR encryption}
 A hint with this question identifies an LFSR as the first encryption scheme, and
