@@ -66,11 +66,7 @@ In fact, this ciphertext is a mono-alphabetic substitution cipher and as such th
 
 \section{Hamming codes and generator polynomials}
 \subsection{Part a}
-The properties of generator polynomials can be used to determine if a polynomial
-is a generator polynomial.  A generator polynomial is also known as a primitive
-polynomial and ``primitive polynomials are also irreducible
-polynomials''~\cite{wolfram-primative}.  As such any polynomial that can be
-factorized modulus 2 is not a generator polynomial.
+A generator polynomial is a primitive polynomial of a particular linear code and ``primitive polynomials are also irreducible polynomials''~\cite{wolfram-primative}.  As such any polynomial that can be factorized modulo 2 is not a generator polynomial.
 
 \begin{description}
     \item[$f1(x) = x^6 + x^3 + x^2 + x + 1$] is reducible because $f1(x) = (x^2+x+1)(x^4+x^3+1)$.
@@ -80,30 +76,14 @@ factorized modulus 2 is not a generator polynomial.
     \item[$f5(x) = x^6 + x + 1$] is a generator polynomial by elimination.
 \end{description}
 
-These justifications can be tested using the two argument version of the
-``hammgen'' function from GNU Octave~\cite{hammgen-octave}, also a function
-available in MATLAB~\cite{hammgen-matlab}. Using this function it is possible to
-determine if a polynomial is a generator polynomial of a hamming code or not:
-when a non-generator polynomial is given as the function's second argument an
-exception is raised.  A program to test all of the given polynomials, shown in
-appendix~\ref{hammgen}, concluded that $f5(x)$ is the only generator polynomial
-out of the given functions.
+These justifications can be tested using the two argument version of the ``hammgen'' function from GNU Octave~\cite{hammgen-octave}, also a function available in MATLAB~\cite{hammgen-matlab}. Using this function it is possible to determine if a polynomial is a generator polynomial of a hamming code or not: when a non-generator polynomial is given as the function's second argument an exception is raised.  A program to test all of the given polynomials, shown in appendix~\ref{hammgen}, concluded that $f5(x)$ is the only generator polynomial out of the functions given.
 
 \subsection{Part b}
-Using the ``hammgen'' function from GNU Octave~\cite{hammgen-octave} a program,
-shown in appendix~\ref{hammgen-hg}, was created to output the parity check,
-H\label{parity-check}, and generator, G, matrices for $f5(x)$.
-See appendix~\ref{h-matrix} for the H matrix and appendix~\ref{g-matrix} for the
-G matrix.
+
+Using the ``hammgen'' function from GNU Octave~\cite{hammgen-octave} a program, shown in appendix~\ref{hammgen-hg}, was created to output the parity check, H\label{parity-check}, and generator, G, matrices for $f5(x)$. See appendix~\ref{h-matrix} for the H matrix and appendix~\ref{g-matrix} for the G matrix.
 
 \subsection{Part c}
-Using the parity check matrix, H, from section~\ref{parity-check} it is possible
-to determine if a message is a valid code word: ``In coding theory, a
-parity-check matrix of a linear block code C is a generator matrix of the dual
-code. As such, a codeword c is in C if and only if the matrix-vector product
-$Hc^t = 0$''~\cite{check-matrix}. A program, included in
-appendix~\ref{check-matrix}, was written to determine that the valid code words
-are m1 and m2.
+Using the parity check matrix, H, from section~\ref{parity-check} it is possible to determine if a message is a valid code word: ``In coding theory, a parity-check matrix of a linear block code C is a generator matrix of the dual code. As such, a codeword c is in C if and only if the matrix-vector product $Hc^t = 0$''~\cite{check-matrix}. A program, included in appendix~\ref{check-matrix}, was written to determine that the valid code words are m1 and m2.
 
 \section{Mono-alphabetic substitution}\label{mono}
 In this challenge, another decryption challenge, the requirement is to decrypt a
