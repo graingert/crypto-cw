@@ -98,9 +98,9 @@ The Wired Equivalent Privacy (WEP) security algorithm was released with the orig
 The name comes from the intention that it would provide the same level of security as a wired connection, however according to \textcite{intercepting-wifi}, ``despite employing the well-known and believed-secure RC4 cipher, WEP contains several major security flaws.''.  The answer to this question aims to detain the cryptographic tools used and the flaws introduced by their miss-application.
 
 \subsubsection{Rivest Cipher 4}
-The Rivest Cipher 4 (RC4) encryption algorithm from RSA Data Security is a stream cipher, these ciphers simulate the operation of a one-time-pad using a pseudo random number generator (PRNG) seeded from a key\cite{otp-faq}. When encrypting binary data, each bit of the plain-text is XORed with a bit of the generated key-stream. To decrypt the system the same random cipher-stream is generated using the same key, or seed to the RC4 cipher.
+The Rivest Cipher 4 (RC4) encryption algorithm from RSA Data Security is a stream cipher, these ciphers simulate the operation of a one-time-pad using a pseudo random number generator (PRNG) seeded from a key\cite{otp-faq}. When encrypting binary data, each bit of the plaintext is XORed with a bit of the generated key-stream. To decrypt the system the same random cipher-stream is generated using the same key, or seed to the RC4 cipher.
 
-One major disadvantage of one time pad, or stream cipher, systems is that if two messages are encrypted with the same key the ciphertexts of those messages can be subjected to cryptanalysis.  The reason for this, shown in equation~\ref{eq:xor} or graphically in equation~\ref{eq:img-xor}, is that the cipher stream can be eliminated by calculating the xor of the two related ciphertexts. An even worse situation is when a message using the same cipher-stream as a previous message with one of those messages containing known plain-text, with this key information for future messages can be derived.
+One major disadvantage of one time pad, or stream cipher, systems is that if two messages are encrypted with the same key the ciphertexts of those messages can be subjected to cryptanalysis.  The reason for this, shown in equation~\ref{eq:xor} or graphically in equation~\ref{eq:img-xor}, is that the cipher stream can be eliminated by calculating the xor of the two related ciphertexts. An even worse situation is when a message using the same cipher-stream as a previous message with one of those messages containing known plaintext, with this key information for future messages can be derived.
 
 \begin{subequations}
     \begin{align}
@@ -118,7 +118,7 @@ One major disadvantage of one time pad, or stream cipher, systems is that if two
         \overbrace{\includegraphics[height=8ex]{img/sendcashe}}^{C_1} \oplus \overbrace{\includegraphics[height=8ex]{img/smileye}}^{C_2} = \overbrace{\includegraphics[height=8ex]{img/smicash1}}^{P_1 \oplus P_2}\label{eq:img-xor}
     \end{align}
 \end{subequations}
-\caption{Graphical representation of why reusing a keystream is dangerous cryptographically: It is clear that some plain-text can be determined from this method (source \protect\cite{stream-reuse})}
+\caption{Graphical representation of why reusing a keystream is dangerous cryptographically: It is clear that some plaintext can be determined from this method (source \protect\cite{stream-reuse})}
 \end{figure}
 
 \subsubsection{Application of RC4 in WEP}
@@ -128,7 +128,7 @@ RC4 is a stream-cipher and so any missing data causes a misalignment with the ke
 To avoid misalignment problems the RC4 stream is restarted each frame. This is not the intended use of a stream cipher therefore stream reuse must be prevented. In WEP this is done using a public random 24-bit Initialization Vector (IV)~\label{p:iv}.  The vast majority of the flaws of WEP are due to this misuse of a stream-cipher. This process is shown in figure~\ref{fig:wepop}.
 
 \subsubsection{Application of CRC32 in WEP}
-Every frame includes an Integrity Check Value (ICV) which is the Cyclic Redundancy Check (CRC-32) hash of the plain-text appended to the plain-text prior to encryption the receiver then re-computes the CRC-32 hash of the message after decryption and if it does not match the frame is dropped. This process is also shown in figure~\ref{fig:wepop}.
+Every frame includes an Integrity Check Value (ICV) which is the Cyclic Redundancy Check (CRC-32) hash of the plaintext appended to the plaintext prior to encryption the receiver then re-computes the CRC-32 hash of the message after decryption and if it does not match the frame is dropped. This process is also shown in figure~\ref{fig:wepop}.
 
 \begin{figure}[htb]
 \center
@@ -139,13 +139,13 @@ Every frame includes an Integrity Check Value (ICV) which is the Cyclic Redundan
 \subsubsection{Flaws}
 
 \paragraph{Integrity Check Value}
-The CRC used in the ICV is a poor cryptographic hash because it is a linear function of the message. Check-sum algorithms are ``unsuitable as cryptographic hash functions''\cite{wiki-crc}. Equation~\ref{eq:crc} shows how to calculate the CRC hash of the modified plain-text, without knowing that original plain-text.
+The CRC used in the ICV is a poor cryptographic hash because it is a linear function of the message. Check-sum algorithms are ``unsuitable as cryptographic hash functions''\cite{wiki-crc}. Equation~\ref{eq:crc} shows how to calculate the CRC hash of the modified plaintext, without knowing that original plaintext.
 
 \begin{equation}\label{eq:crc}
 C'=C \oplus (\Delta ,c(\Delta)),
 \end{equation}
 
-Where $C$ is the original CRC, $C'$ is the CRC of the modified data, $\Delta$ is the changes made to the plain-text, and $c(\Delta)$ is the CRC-32 of $\Delta$.
+Where $C$ is the original CRC, $C'$ is the CRC of the modified data, $\Delta$ is the changes made to the plaintext, and $c(\Delta)$ is the CRC-32 of $\Delta$.
 
 As such an attacker can flip any bit in the ciphertext and correctly adjust the encrypted hash to avoid detection, rendering any data integrity checks pointless.
 
@@ -162,7 +162,7 @@ WEP has no anti-replay protection: no sequence number included in the protocol t
 
 \paragraph{Shared Key Recovery}
 \textcite{tews2007breaking} published a method to recover a 104-bit shared WEP key ``in less than 60 seconds''  The method uses the predictability of the ARP protocol: first 16 bytes are known because it is the MAC address of the station.
-The method XORs known bytes with the cypher text bytes resulting in the first 128 bits of key-stream and IV. With enough ARP packets, the shared key can be determined statistically.
+The method XORs known bytes with the cipher text bytes resulting in the first 128 bits of key-stream and IV. With enough ARP packets, the shared key can be determined statistically.
 The inventive step is to take advantage of the lack of replay prevention, and broadcast captured ARP requests to get more ARP responses.
 
 \paragraph{The Caffe Latte Attack}
