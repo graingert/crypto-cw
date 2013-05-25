@@ -66,7 +66,11 @@ In fact, this ciphertext is a mono-alphabetic substitution cipher and as such th
 
 \section{Hamming codes and generator polynomials}
 \subsection{Part a}
-A generator polynomial is a primitive polynomial of a particular linear code and ``primitive polynomials are also irreducible polynomials''~\cite{wolfram-primative}.  As such any polynomial that can be factorized modulo 2 is not a generator polynomial.
+The properties of generator polynomials can be used to determine if a polynomial
+is a generator polynomial.  A generator polynomial is also known as a primitive
+polynomial and ``primitive polynomials are also irreducible
+polynomials''~\cite{wolfram-primative}.  As such any polynomial that can be
+factorized modulus 2 is not a generator polynomial.
 
 \begin{description}
     \item[$f1(x) = x^6 + x^3 + x^2 + x + 1$] is reducible because $f1(x) = (x^2+x+1)(x^4+x^3+1)$.
@@ -76,46 +80,72 @@ A generator polynomial is a primitive polynomial of a particular linear code and
     \item[$f5(x) = x^6 + x + 1$] is a generator polynomial by elimination.
 \end{description}
 
-These justifications can be tested using the two argument version of the ``hammgen'' function from GNU Octave~\cite{hammgen-octave}, also a function available in MATLAB~\cite{hammgen-matlab}. Using this function it is possible to determine if a polynomial is a generator polynomial of a hamming code or not: when a non-generator polynomial is given as the function's second argument an exception is raised.  A program to test all of the given polynomials, shown in appendix~\ref{hammgen}, concluded that $f5(x)$ is the only generator polynomial out of the functions given.
+These justifications can be tested using the two argument version of the
+``hammgen'' function from GNU Octave~\cite{hammgen-octave}, also a function
+available in MATLAB~\cite{hammgen-matlab}. Using this function it is possible to
+determine if a polynomial is a generator polynomial of a hamming code or not:
+when a non-generator polynomial is given as the function's second argument an
+exception is raised.  A program to test all of the given polynomials, shown in
+appendix~\ref{hammgen}, concluded that $f5(x)$ is the only generator polynomial
+out of the given functions.
 
 \subsection{Part b}
-Using the ``hammgen'' function from GNU Octave~\cite{hammgen-octave} a program, shown in appendix~\ref{hammgen-hg}, was created to output the parity check, H\label{parity-check}, and generator, G, matrices for $f5(x)$. See appendix~\ref{h-matrix} for the H matrix and appendix~\ref{g-matrix} for the G matrix.
+Using the ``hammgen'' function from GNU Octave~\cite{hammgen-octave} a program,
+shown in appendix~\ref{hammgen-hg}, was created to output the parity check,
+H\label{parity-check}, and generator, G, matrices for $f5(x)$.
+See appendix~\ref{h-matrix} for the H matrix and appendix~\ref{g-matrix} for the
+G matrix.
 
 \subsection{Part c}
-Using the parity check matrix, H, from section~\ref{parity-check} it is possible to determine if a message is a valid code word: ``In coding theory, a parity-check matrix of a linear block code C is a generator matrix of the dual code. As such, a codeword c is in C if and only if the matrix-vector product $Hc^t = 0$''~\cite{check-matrix}. A program, included in appendix~\ref{check-matrix}, was written to determine that the valid code words are m1 and m2.
+Using the parity check matrix, H, from section~\ref{parity-check} it is possible
+to determine if a message is a valid code word: ``In coding theory, a
+parity-check matrix of a linear block code C is a generator matrix of the dual
+code. As such, a codeword c is in C if and only if the matrix-vector product
+$Hc^t = 0$''~\cite{check-matrix}. A program, included in
+appendix~\ref{check-matrix}, was written to determine that the valid code words
+are m1 and m2.
 
-\section{Monoalphabetic substitution}\label{mono}
-Part 3 involves a decryption challenge: the requirement is to decrypt a block of text included in appendix~\ref{q3-cyphertext}. This time there is no hint provided.
+\section{Mono-alphabetic substitution}\label{mono}
+In this challenge, another decryption challenge, the requirement is to decrypt a
+block of text included in appendix~\ref{q3-cyphertext}. This time there is no
+hint provided.
 
-The clue that the ciphertext is the result of monoalphabetic substitution is the use of repeated words such as ``uli'' and ``blf'' potentially indicating the English three letter words ``and'' and ``the''. A program, included in appendix~\ref{break-simplesub}, based on work by \textcite{stochastic-searching} was used to successfully break the cypher. The solution is included in appendix~\ref{q3-solution}. While a frequency analysis would also have been useful for solving this type of cypher in general, this was not used due to the success of the automated simple substitution breaking program.
+The clue that the cypher-text is the result of mono-alphabetic
+substitution is the use of repeated words such as ``uli'' and ``blf''
+potentially indicating the English three letter words ``and'' and ``the''.
+A program, included in appendix~\ref{break-simplesub}, based on work by
+\textcite{stochastic-searching} was used to successfully break the cypher.
+The solution is included in appendix~\ref{q3-solution}.
+While a frequency analysis would also be useful for solving these sorts of cyphers in
+general, this was not used because of the success of the automated simple
+substitution breaking program.
 
 \section{The miss-application of RC4 and CRC32 in WEP}\label{conclusions}
-
 \subsection{Part a}
 \subsubsection{What is WEP}
-The Wired Equivalent Privacy (WEP) security algorithm was released with the original 802.11 standard in 1999\cite{802.11}. This system was designed to be be responsible for both authentication (access control), encryption (confidentiality) and data integrity in Wi-Fi networks.
+The Wired Equivalent Privacy (WEP) security algorithm was released with the original 802.11 standard in 1999\cite{802.11}. This system was designed to be be responsible for both authentication (access control), encryption (confidentiality) and data integrity (preventing an attacker changing sent data) in Wi-Fi networks.
 
-The name comes from the intention that it would provide the same level of security as a wired connection, however according to \textcite{intercepting-wifi}, ``despite employing the well-known and believed-secure RC4 cipher, WEP contains several major security flaws.''.  The answer to this question aims to detain the cryptographic tools used and the flaws introduced by their miss-application.
+The name comes from the intention that it would provide the same level of security as a wired connection however, according to \textcite{intercepting-wifi}, ``despite employing the well-known and believed-secure RC4 cipher, WEP contains several major security flaws.''.  The answer to this question aims to define the cryptographic tools used and the flaws introduced by their miss-application.
 
 \subsubsection{Rivest Cipher 4}
-The Rivest Cipher 4 (RC4) encryption algorithm from RSA Data Security is a stream cipher, these ciphers simulate the operation of a one-time-pad using a pseudo random number generator (PRNG) seeded from a key\cite{otp-faq}. When encrypting binary data, each bit of the plaintext is XORed with a bit of the generated key-stream. To decrypt the system the same random cipher-stream is generated using the same key, or seed to the RC4 cipher.
+The Rivest Cipher 4 (RC4) encryption algorithm from RSA Data Security is a stream cipher. These ciphers simulate the operation of a one time pad (OTP) using a pseudo random number generator (PRNG) seeded from a key~\cite{otp-faq}. When encrypting binary data, each bit of the plaintext is exclusive ORed (XORed) with a bit of the generated keystream. To decrypt the message the same random cipher-stream is generated using the same pre-shared key, or seed to the RC4 cipher, and XORd with the ciphertext.
 
-One major disadvantage of one time pad, or stream cipher, systems is that if two messages are encrypted with the same key the ciphertexts of those messages can be subjected to cryptanalysis.  The reason for this, shown in equation~\ref{eq:xor} or graphically in equation~\ref{eq:img-xor}, is that the cipher stream can be eliminated by calculating the xor of the two related ciphertexts. An even worse situation is when a message using the same cipher-stream as a previous message with one of those messages containing known plaintext, with this key information for future messages can be derived.
+One major disadvantage of OTP, or stream cipher systems is that if two messages are encrypted with the same key, the ciphertexts of those messages can be subjected to cryptanalysis.  The reason for this, shown in equation~\ref{eq:xor} or graphically in equation~\ref{eq:img-xor}, is that the bits of cipher-stream can be eliminated by calculating the xor of the two related ciphertexts. Furthermore, this vulnerability can be exacerbated if a message is not only using the same cipher-stream as a previous message, but one of those messages also contains known plaintext.  This text can be used as a key allowing the contents of future messages to be derived.
 
 \begin{subequations}
     \begin{align}
-        P_1 \oplus KS = C_1,\\
-        P_2 \oplus KS = C_2,\\
-        C_1 \oplus C_2 = P_1 \oplus P_2\label{eq:xor}
+       P_1 \oplus KS = C_1,\\
+       P_2 \oplus KS = C_2,\\
+       C_1 \oplus C_2 = P_1 \oplus P_2\label{eq:xor}
     \end{align}
 \end{subequations}
 
 \begin{figure}[htb]
 \begin{subequations}
     \begin{align}
-        \overbrace{\includegraphics[height=8ex]{img/sendcash1}}^{P_1} \oplus \overbrace{\includegraphics[height=8ex]{img/key1}}^{KS} = \overbrace{\includegraphics[height=8ex]{img/sendcashe}}^{C_1},\\
-        \overbrace{\includegraphics[height=8ex]{img/smiley}}^{P_2}    \oplus \overbrace{\includegraphics[height=8ex]{img/key1}}^{KS} =\overbrace{\includegraphics[height=8ex]{img/smileye}}^{C_2},\\
-        \overbrace{\includegraphics[height=8ex]{img/sendcashe}}^{C_1} \oplus \overbrace{\includegraphics[height=8ex]{img/smileye}}^{C_2} = \overbrace{\includegraphics[height=8ex]{img/smicash1}}^{P_1 \oplus P_2}\label{eq:img-xor}
+       \overbrace{\includegraphics[height=8ex]{img/sendcash1}}^{P_1} \oplus \overbrace{\includegraphics[height=8ex]{img/key1}}^{KS} = \overbrace{\includegraphics[height=8ex]{img/sendcashe}}^{C_1},\\
+       \overbrace{\includegraphics[height=8ex]{img/smiley}}^{P_2}    \oplus \overbrace{\includegraphics[height=8ex]{img/key1}}^{KS} =\overbrace{\includegraphics[height=8ex]{img/smileye}}^{C_2},\\
+       \overbrace{\includegraphics[height=8ex]{img/sendcashe}}^{C_1} \oplus \overbrace{\includegraphics[height=8ex]{img/smileye}}^{C_2} = \overbrace{\includegraphics[height=8ex]{img/smicash1}}^{P_1 \oplus P_2}\label{eq:img-xor}
     \end{align}
 \end{subequations}
 \caption{Graphical representation of why reusing a keystream is dangerous cryptographically: It is clear that some plaintext can be determined from this method (source \protect\cite{stream-reuse})}
@@ -124,8 +154,9 @@ One major disadvantage of one time pad, or stream cipher, systems is that if two
 \subsubsection{Application of RC4 in WEP}
 WEP uses a 40-bit shared key to initialize the same RC4 state for all authenticated stations, the reason for using only 40-bits was to comply with US restrictions on exporting cryptography technology\cite{wep-evolution}.
 
-RC4 is a stream-cipher and so any missing data causes a misalignment with the key-stream this is a major problem in Wi-Fi, or any Ethernet based protocol, where frames are expected to be lost.
-To avoid misalignment problems the RC4 stream is restarted each frame. This is not the intended use of a stream cipher therefore stream reuse must be prevented. In WEP this is done using a public random 24-bit Initialization Vector (IV)~\label{p:iv}.  The vast majority of the flaws of WEP are due to this misuse of a stream-cipher. This process is shown in figure~\ref{fig:wepop}.
+RC4 is a stream-cipher and so any missing data causes a misalignment with the key-stream.  This property is a major problem in Wi-Fi, or any Ethernet based protocol, where frames are expected to be lost.  To avoid misalignment problems, the RC4 encryption process is restarted each frame.
+
+This is not the intended use of RC4: each time a new stream is needed a new key should be used.  As a workaround to avoid stream reuse. In WEP this is done using a public random 24-bit Initialization Vector (IV)~\label{p:iv}.  The vast majority of the flaws of WEP are due to this misuse of RC4. This entire process is shown in figure~\ref{fig:wepop}.
 
 \subsubsection{Application of CRC32 in WEP}
 Every frame includes an Integrity Check Value (ICV) which is the Cyclic Redundancy Check (CRC-32) hash of the plaintext appended to the plaintext prior to encryption the receiver then re-computes the CRC-32 hash of the message after decryption and if it does not match the frame is dropped. This process is also shown in figure~\ref{fig:wepop}.
@@ -137,36 +168,29 @@ Every frame includes an Integrity Check Value (ICV) which is the Cyclic Redundan
 \end{figure}
 
 \subsubsection{Flaws}
-
 \paragraph{Integrity Check Value}
-The CRC used in the ICV is a poor cryptographic hash because it is a linear function of the message. Check-sum algorithms are ``unsuitable as cryptographic hash functions''\cite{wiki-crc}. Equation~\ref{eq:crc} shows how to calculate the CRC hash of the modified plaintext, without knowing that original plaintext.
-
+The CRC used in the ICV is a poor cryptographic hash because it is a linear function of the message. Checksum algorithms are ``unsuitable as cryptographic hash functions''\cite{wiki-crc}. Equation~\ref{eq:crc} shows how to calculate the CRC hash of the modified plaintext, without knowing that original plaintext.
 \begin{equation}\label{eq:crc}
 C'=C \oplus (\Delta ,c(\Delta)),
 \end{equation}
 
 Where $C$ is the original CRC, $C'$ is the CRC of the modified data, $\Delta$ is the changes made to the plaintext, and $c(\Delta)$ is the CRC-32 of $\Delta$.
-
-As such an attacker can flip any bit in the ciphertext and correctly adjust the encrypted hash to avoid detection, rendering any data integrity checks pointless.
+As such an attacker can flip any bit in the ciphertext and correctly adjust the encrypted hash to avoid detection, rendering any data integrity checks utterly pointless.
 
 \paragraph{Small Key Space}
-Brute-force attacks on WEP were already practical when the protocol was designed with only 40-bits of key.  The protocol was extended by many manufacturers using a 104-bit key (also called 128-bit because a 104-bit key plus a 24-bit IV totals to 128-bits).  The 104-bit keys operate in exactly the same way as 40-bit keys except with a longer key.
+Brute-force attacks on WEP were already practical when the protocol was designed due to the small key space afforded by a 40-bit key.  The protocol was extended by many manufacturers using a 104-bit key (also called 128-bit because a 104-bit key plus a 24-bit IV totals to 128-bits), this longer key sufficiently increases the search space and makes brute force attacks prohibitively difficult.  The 104-bit keys operate in exactly the same way as 40-bit keys except with a longer key.
 
 \paragraph{Key-stream discovery}
-RC4 becomes vulnerable if two messages are encrypted using the same key-stream.  As discussed in paragraph~\ref{p:iv} each frame has a random 24-bit Initialization Vector (IV).  Unfortunately due to the very short IV length the probability of an IV being repeated after 4,096 messages becomes likely.
-
-The plain text and key-stream can then be discovered using equation~\ref{eq:xor}.
+As stated before, RC4 and other stream ciphers become vulnerable if two messages are encrypted using the same key-stream.  As discussed in paragraph~\ref{p:iv} each frame has a random 24-bit Initialization Vector (IV).  Unfortunately, due to the very short IV length, the probability of an IV being repeated after 4,096 messages becomes likely.  The plaintext and key-stream can then be discovered using equation~\ref{eq:xor}.
 
 \paragraph{Frame Injection}
-WEP has no anti-replay protection: no sequence number included in the protocol to avoid. As such an attacker can replay previous frames and re-use a known IV and key-stream (gained from previous attacks) to generate unlimited valid frames.  An attacker can capture frames and resend them resulting in a Denial of Service or the ability to send other malicious traffic.
+WEP has no anti-replay protection i.e. there is no sequence number included in the protocol.  As such an attacker can replay previous frames, reusing the same IV and key-stream to generate unlimited valid frames.  While this is not usually an issue because repeated Ethernet frames can be expected to be handled by higher protocols in the Open Systems Interconnection (OSI) model - this attack can be used to generate more frames susceptible to known plaintext attacks as discussed in paragraph~\ref{arp-is-bad}.
 
 \paragraph{Shared Key Recovery}
-\textcite{tews2007breaking} published a method to recover a 104-bit shared WEP key ``in less than 60 seconds''  The method uses the predictability of the ARP protocol: first 16 bytes are known because it is the MAC address of the station.
-The method XORs known bytes with the cipher text bytes resulting in the first 128 bits of key-stream and IV. With enough ARP packets, the shared key can be determined statistically.
-The inventive step is to take advantage of the lack of replay prevention, and broadcast captured ARP requests to get more ARP responses.
+\textcite{tews2007breaking} published a method to recover a 104-bit shared WEP key ``in less than 60 seconds''  The method uses the predictability of the ARP protocol i.e. that the first 16 bytes are known because it is the MAC address of the station.  The method XORs known bytes with the ciphertext bytes resulting in the first 128 bits of keystream and IV. With enough ARP packets, the shared key can be determined statistically.  The novel step in this approach is to take advantage of the lack of replay prevention, and broadcast captured ARP requests to get more ARP responses\label{arp-is-bad}.
 
 \paragraph{The Caffe Latte Attack}
-The Caffe Latte attack, proposed by \textcite{cafe}, aims to discover a WEP key without access to the original AP using information from only the client stations that have the WEP key. The attack is so named because of the possibility to sit in a coffee shop and listen to clients.
+The Caffe Latte attack, proposed by~\textcite{cafe}, aims to discover a WEP key without access to the original AP using information from only the client stations that have the WEP key. The attack is so named as one could listen to clients while sitting in a coffee shop.
 
 The steps of the attack involve:
 \begin{enumerate}
@@ -177,31 +201,34 @@ The steps of the attack involve:
 \end{enumerate}
 
 \subsubsection{Fixes}
-Because of these flaws various proposals have been put forward to reduce the security impact.
+Various proposals have been put forward to reduce the security impact of the flaws outlined above.
+
 \paragraph{WEP2}
-Extends shared key and IV to 128 bits. However the system is still vulnerable because it still allows IV re-use and still uses CRC-32 for the ICV.
-\paragraph{WEPplus} a proprietary enhancement to WEP by Agere Systems: simply Avoids repeated ``Weak IVs'' in WEP.  Only effective when used at ``both ends'', on both client station and AP. Still doesn't prevent replay attacks.
-The system is proprietary so not well used.
+Extends shared key and IV to 128 bits. However this new system is vulnerable because it still allows IV re-use and still uses CRC-32 for the ICV.
+
+\paragraph{WEPplus} a proprietary enhancement to WEP by Agere Systems: simply Avoids repeated ``Weak IVs'' in WEP.  However, this is only effective when used at ``both ends'' i.e.  on both client station and AP and still doesn't prevent replay attacks.  As the system is proprietary its usage is not widespread.
+
 \paragraph{Dynamic WEP}
-Gives each user a dynamically generated wep key based off a master key. This system was never standardized, proprietary, so not well used. The idea was however carried over into 802.11i.
+This gives each user a dynamically generated wep key based off a master key. This system was never standardized, proprietary and like WEPplus not widely used. The principle behind it however, was implemented in 802.11i.
 
 \paragraph{WPA}
-WPA was created with just the minimum support required to buy time to develop WPA2. The protocol uses Temporal Key Integrity Protocol (TKIP), combining ideas from the previously discussed WEP protocol extensions. TKIP still uses RC4, but with a better implementation:
+Wi-Fi Protected Access (WPA) was created to replace WEP with only minimal changes to the WEP protocol so as to buy time to develop WPA2. The system uses Temporal Key Integrity Protocol (TKIP), combining ideas from the previously discussed WEP protocol extensions. TKIP still uses RC4, but with a better implementation:
 
 \begin{itemize}
 \item Uses key mixing for shared key and IV.
-\item Ovoids using the same cipher-stream twice.
+\item Avoids using the same cipher-stream twice.
 \item Uses a sequence counter to prevent replay attacks.
 \end{itemize}
 
 This protocol was carried forward to WPA2 as WPA2-TKIP.
 
 \paragraph{WPA2-AES}
-WPA2-AES uses the Advanced Encryption Standard (AES) encryption in CCB mode.
-AES is a block cipher, so none of the discovered WEP flaws practically apply. WPA2 When used with AES, a secure password and unique SSID is believed to be secure and is now the recommended wireless security default.
+WPA2-AES uses the Advanced Encryption Standard (AES) encryption specifically as the Counter Cipher Mode with Block Chaining Message Authentication Code Protocol (CCMP).
+
+AES is a block cipher, so none of the discovered WEP flaws practically apply. WPA2, when used with: AES; a secure password and a unique SSID, is believed to be secure and is now the recommended wireless security default.
 
 \subsection{Part b}
-Aircrack-ng, on soton campus.
+Using a simple tool such as network-manager\cite{nm} it is possible to locate many WEP and WPA-TKIP networks currently in use - in fact, many are broadcast on the University of Southampton campus itself.  Please note: the identifying information of these APs has not been included in this report due to potential legal implications as the owners of these networks have not yet been notified of these vulnerabilities.
 
 \pagebreak
 \printbibliography
