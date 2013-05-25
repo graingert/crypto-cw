@@ -52,44 +52,17 @@ tool to create automated cipher decryption systems.
 \tableofcontents
 \pagebreak
 \section{Linear feedback shift register}
-The problem set forth in this challenge is to decrypt what appears to be a block
-of hexadecimal encoded data.  The first observation about the cypher-text is that it is presented as a bitmap.
-After some analysis, not discussed in this report, the bitmap appears to
-contain no information embedded using stegonographic techniques.  The second, is
-that there is a pattern of high bits that repeat every 32 bits.
+Part one involves the decryption of what appears to be a block of hexadecimal encoded data.  It is given that the second encryption scheme is an LFSR and a crib of ``Ur'' is divulged.  There were two main observations made initially: a repeating pattern of high bits every 32 bits was present and that the ciphertext was presented as a bitmap.  The unusual delivery method hinted that steganographic techniques could have been used however, after some analysis, no embedded information was revealed.
 
 \subsection{Compromising LFSR encryption}
-A hint with this question identifies an LFSR as the first encryption scheme and
-gives away the crib of ``Ur''.  Because of this hint a program, shown in
-appendix~\ref{break-lfsr}, was created to brute force all possible LFSR
-sequences that match the given crib.  The output of this program is shown in
-appendix~\ref{break-lfsr-out}.
+An LFSR of degree 5 will repeat every 31 bits, however, referring back to the first observation of the ciphertext that there is a pattern of high bits repeating every 32 bits. This observation clearly contradicts the hint that the second encryption stage uses an LFSR of degree 5 and indicates that the text was encrypted using a 32 bit repeating key.
 
-It is clear from manual inspection of the output that the result is incorrect:
-the output appears to be corrupt after and including the
-4th character. The number of bits of cipher-stream required to specify the
-state and characteristic function of the LFSR is greater than the number of
-bits divulged by the crib, therefore the text has not been encrypted with a
-plain LFSR stream cipher.
+A program, shown in appendix~\ref{last-byte}, was created to determine the repeating 32 bit key using brute force. The brute force was made feasible using the assumption that the first 3 bytes of the repeating key were from a valid 31 bit LFSR key-stream and that the mid-stage ciphertext would only contain printable characters. This resulted in only one valid solution.
 
-\subsection{Compromising a buggy LFSR encryption implementation}
-An LFSR of degree 5 will repeat every 31 bits, however, referring back to the
-second observation of the cipher-text there is a pattern of high bits that
-repeats every 32 bits. This observation is clearly contradicts the hint that the
-second encryption stage uses an LFSR of degree 5.
+\subsection{Compromising a non-standard LFSR encryption implementation}
+The mid-stage ciphertext, shown in appendix~\ref{last-byte-out}, shows signs consistent with the use of a mono-alphabetic substitution cipher: the use of repeated three letter words ``pna'' and ``gur'' potentially indicating ``and'' and ``the''; long repeated words ``Ubjrire'' and apparant use of English punctuation such as commas and capital letters after full-stops.
 
-A program, shown in appendix~\ref{last-byte}, was created to brute force the
-last byte of the repeating 32 bit key, assuming that the first 3 bytes were from
-a valid 31 bit LFSR key-stream.
-
-This resulted in only one valid solution: valid as defined by a solution with
-only printable characters.  This mid-stage cipher-text, shown in
-appendix~\ref{last-byte-out}, shows signs of a mono-alphabetic substitution
-cypher: repeated three letter words ``pna'' and ``gur'' potentially indicating
-``and'' and ``the'', long repeated words ``Ubjrire'', and valid use of
-punctuation such as commas and capitol letters after full-stops. As such this
-remaining cipher-text was decrypted using techniques as discussed in
-section~\ref{mono}.  The final solution is shown in appendix~\ref{q1-solution}.
+In fact, this ciphertext is a mono-alphabetic substitution cipher and as such the remaining ciphertext could be decrypted using techniques as discussed in section~\ref{mono}.  The final solution is shown in appendix~\ref{q1-solution}.
 
 \section{Hamming codes and generator polynomials}
 \subsection{Part a}
@@ -158,7 +131,7 @@ The name comes from the intention that it would provide the same level of securi
 \subsubsection{Rivest Cipher 4}
 The Rivest Cipher 4 (RC4) encryption algorithm from RSA Data Security is a stream cipher, these ciphers simulate the operation of a one-time-pad using a pseudo random number generator (PRNG) seeded from a key\cite{otp-faq}. When encrypting binary data, each bit of the plain-text is XORed with a bit of the generated key-stream. To decrypt the system the same random cipher-stream is generated using the same key, or seed to the RC4 cipher.
 
-One major disadvantage of one time pad, or stream cipher, systems is that if two messages are encrypted with the same key the cipher-texts of those messages can be subjected to cryptanalysis.  The reason for this, shown in equation~\ref{eq:xor} or graphically in equation~\ref{eq:img-xor}, is that the cipher stream can be eliminated by calculating the xor of the two related cipher-texts. An even worse situation is when a message using the same cipher-stream as a previous message with one of those messages containing known plain-text, with this key information for future messages can be derived.
+One major disadvantage of one time pad, or stream cipher, systems is that if two messages are encrypted with the same key the ciphertexts of those messages can be subjected to cryptanalysis.  The reason for this, shown in equation~\ref{eq:xor} or graphically in equation~\ref{eq:img-xor}, is that the cipher stream can be eliminated by calculating the xor of the two related ciphertexts. An even worse situation is when a message using the same cipher-stream as a previous message with one of those messages containing known plain-text, with this key information for future messages can be derived.
 
 \begin{subequations}
     \begin{align}
@@ -205,7 +178,7 @@ C'=C \oplus (\Delta ,c(\Delta)),
 
 Where $C$ is the original CRC, $C'$ is the CRC of the modified data, $\Delta$ is the changes made to the plain-text, and $c(\Delta)$ is the CRC-32 of $\Delta$.
 
-As such an attacker can flip any bit in the cipher-text and correctly adjust the encrypted hash to avoid detection, rendering any data integrity checks pointless.
+As such an attacker can flip any bit in the ciphertext and correctly adjust the encrypted hash to avoid detection, rendering any data integrity checks pointless.
 
 \paragraph{Small Key Space}
 Brute-force attacks on WEP were already practical when the protocol was designed with only 40-bits of key.  The protocol was extended by many manufacturers using a 104-bit key (also called 128-bit because a 104-bit key plus a 24-bit IV totals to 128-bits).  The 104-bit keys operate in exactly the same way as 40-bit keys except with a longer key.
@@ -244,7 +217,7 @@ The system is proprietary so not well used.
 Gives each user a dynamically generated wep key based off a master key. This system was never standardized, proprietary, so not well used. The idea was however carried over into 802.11i.
 
 \paragraph{WPA}
-WPA was created with just the minimum support required to buy time to develop WPA2.  The protocol uses Temporal Key Integrity Protocol (TKIP), combining ideas from the previously discussed WEP protocol extensions. TKIP still uses RC4, but with a better implementation:
+WPA was created with just the minimum support required to buy time to develop WPA2. The protocol uses Temporal Key Integrity Protocol (TKIP), combining ideas from the previously discussed WEP protocol extensions. TKIP still uses RC4, but with a better implementation:
 
 \begin{itemize}
 \item Uses key mixing for shared key and IV.
@@ -256,7 +229,7 @@ This protocol was carried forward to WPA2 as WPA2-TKIP.
 
 \paragraph{WPA2-AES}
 WPA2-AES uses the Advanced Encryption Standard (AES) encryption in CCB mode.
-AES is a block cipher, so none of the discovered WEP flaws practically apply.  WPA2 When used with AES, a secure password and unique SSID is believed to be secure and is now the recommended wireless security default.
+AES is a block cipher, so none of the discovered WEP flaws practically apply. WPA2 When used with AES, a secure password and unique SSID is believed to be secure and is now the recommended wireless security default.
 
 \subsection{Part b}
 Aircrack-ng, on soton campus.
